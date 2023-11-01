@@ -1,4 +1,4 @@
-from flows.address_book_flows import flow_contact_add
+from flows.address_book_flows import flow_contact_add, flow_contact_edit, flow_contact_remove
 from flows.common_flow import get_main_completion, parse_input
 from models.address_book import AddressBook
 from models.notes import Notes
@@ -30,13 +30,33 @@ def main():
                 break
             elif command == "hello":
                 print("How can I help you?")
+            elif command == "help":
+                # TODO: Implement help information
+                print("Help is not implemented right now")
             elif module == 'contacts':
                 if command == 'add':
                     print(flow_contact_add(book))
                 elif command == "all":
                     print(get_all_contacts(book))
                 elif command == 'edit':
-                    pass
+                    if len(args) > 0 and args[0] is not None and book.find_full_match(args[0]) is not None:
+                        print(flow_contact_edit(book, args))
+                    else:
+                        print("Provide valid contact name to edit")
+                elif command == 'remove':
+                    if len(args) > 0 and args[0] is not None and book.find_full_match(args[0]) is not None:
+                        record = book.find_full_match(args[0])
+                        print(flow_contact_remove(book, record))
+                    else:
+                        print("Provide valid contact name to remove. Valid format is: contacts remove \"NAME\"")
+                elif command == 'find':
+                    # TODO: Implement find flow
+                    print("Find is not implemented")
+                elif command == 'birthdays':
+                    # TODO: Implement birthdays flow
+                    print("Birthdays is not implemented")
+                else:
+                    invalid_command_action()
             else:
                 invalid_command_action()
 
