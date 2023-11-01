@@ -1,7 +1,7 @@
 from datetime import datetime
 
 
-mock_users = [
+demo_users = [
     {"name": "Bill Gates", "birthday": datetime(1955, 10, 28)},
     {"name": "Jan Koum", "birthday": datetime(1976, 2, 24)},
     {"name": "Kim Kardashian", "birthday": datetime(1980, 10, 21)},

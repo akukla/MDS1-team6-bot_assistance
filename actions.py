@@ -1,4 +1,4 @@
-from decorators import input_error
+from utils.decorators import input_error
 from models.address_book import AddressBook, Record
 
 
@@ -33,7 +33,8 @@ def get_contact(args, book: AddressBook):
     return contact.phone.value
 
 
-def get_all_contact(args, book: AddressBook):
+def get_all_contacts(book: AddressBook):
+    # TODO: Update 
     if len(book) == 0:
         return 'Address book is empty'
     ret = []

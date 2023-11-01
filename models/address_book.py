@@ -1,10 +1,10 @@
-from collections import UserDict
-from typing import Optional, Self
+from typing import Optional
 from datetime import date
-import pickle
+from models.base_class import BaseClass
+from models.demo_users import demo_users
 
-from exceptions import IncorrectFormatException
-from parsers import *
+from utils.exceptions import IncorrectFormatException
+from utils.parsers import *
 
 
 class Field:
@@ -55,6 +55,12 @@ class Record:
             return False
         self.birthday = birthday_obj
         return True
+    
+    def _add_birthday_datetime(self, birthday: datetime)  -> bool:
+        if birthday is None:
+            return False
+        self.birthday = birthday
+        return True
 
     def add_phone(self, phone: str) -> bool:
         try:
@@ -81,16 +87,30 @@ class Record:
         return ret
 
 
-class AddressBook(UserDict):
+class AddressBook(BaseClass):
+
+    _filename: str = 'address_book.pcl'
+
+    def add_contact(name: str, phone: Optional[str] = None, email: Optional[str] = None, address: Optional[str] = None, birthday: Optional[str] = None) -> bool:
+        # TODO: Add contact with non None fields
+        print("TODO: Add contact with non None fields: name: {name}, phone: {phone}, email: {email}, address: {address}, birthday: {birthday}".format(name=name, phone=phone, email=email, address=address, birthday=birthday))
+        return False
 
     def add_record(self, record: Record) -> bool:
         self.data[record.name.value] = record
         return True
 
-    def find(self, name: str) -> Optional[Record]:
+    def find_full_match(self, name: str) -> Optional[Record]:
         if name in self.data.keys():
             return self.data[name]
         return None
+    
+    def find(self, term: str) -> Optional[list[Record]]:
+        ret = []
+        for key in self.data.keys():
+            if key.lower().find(term.lower()) != -1:
+                ret.append(self.data[key])
+        return ret
     
     def enumerate(self) -> Optional[Record]:
         for item in self.data:
@@ -106,19 +126,12 @@ class AddressBook(UserDict):
             return True
         return False
     
-    def save(self, filename = 'address_book.bin'):
-        with open(filename, "wb") as file:
-            pickle.dump(self, file)
+    def _load_demo_data(self):
 
-    @staticmethod
-    def load_or_create(filename = 'address_book.bin') -> Self:
-        result = None
-        try:
-            with open(filename, "rb") as file:
-                result = pickle.load(file)
-        except Exception:
-            print('Unable to load address book. Empty address book was created.')
-        return result if result is not None else AddressBook()
+        for user in demo_users:
+            record = Record(user['name'])
+            record._add_birthday_datetime(user['birthday'])
+            self.add_record(record)
     
     def get_birthdays_per_week(self) -> list[str]:
         return_list = []

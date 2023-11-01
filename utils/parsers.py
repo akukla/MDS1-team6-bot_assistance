@@ -1,6 +1,6 @@
 from datetime import datetime
 import re
-from exceptions import IncorrectFormatException
+from utils.exceptions import IncorrectFormatException
 
 
 def birthday_parse_or_throw(value) -> datetime:
