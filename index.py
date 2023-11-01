@@ -34,7 +34,7 @@ def main():
                 if command == 'add':
                     print(flow_contact_add(book))
                 elif command == "all":
-                    print(get_all_contact(book))
+                    print(get_all_contacts(book))
                 elif command == 'edit':
                     pass
             else:

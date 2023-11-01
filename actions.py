@@ -33,7 +33,8 @@ def get_contact(args, book: AddressBook):
     return contact.phone.value
 
 
-def get_all_contact(book: AddressBook):
+def get_all_contacts(book: AddressBook):
+    # TODO: Update 
     if len(book) == 0:
         return 'Address book is empty'
     ret = []
