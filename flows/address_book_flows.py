@@ -60,11 +60,13 @@ def flow_contact_edit(book: AddressBook, args: list[str]) -> str:
     if len(contact_name.strip()) == 0:
         return 'Canceled'
 
+    record = book.find_full_match(contact_name)
+    
     available_fields = ["phone", "email", "address", "birthday",]
     field_completion = WordCompleter(available_fields, ignore_case=True,)
 
     field = prompt(
-        HTML(f"What fiald would you like to edit? <highlighted-text>{str(available_fields)}</highlighted-text> or <highlighted-text>Leave Empty for Skip</highlighted-text>: "),
+        HTML(f"What field would you like to edit? <highlighted-text>{str(available_fields)}</highlighted-text> or <highlighted-text>Leave Empty for Skip</highlighted-text>: "),
         style=style,
         completer=field_completion,
         validator=SimpleListValidator(available_fields, allow_empty=True)
@@ -80,9 +82,11 @@ def flow_contact_edit(book: AddressBook, args: list[str]) -> str:
             ).strip()
             
         if len(value_for_editing) == 0:
-            # TODO: Implement delete phone number from contact
+            record.phone = None 
+           
             return 'Delete Phone'
-        # TODO: implement change contact phone
+       
+        record.edit_phone(value_for_editing)
         return "Phone was changed"
     elif field == 'email':
         value_for_editing = prompt(

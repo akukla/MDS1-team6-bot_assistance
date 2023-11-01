@@ -54,12 +54,15 @@ def main():
                     print("Find is not implemented")
                 elif command == 'birthdays':
                     # TODO: Implement birthdays flow
-                    print("Birthdays is not implemented")
+                    print(upcoming_birthdays(book))
                 else:
                     invalid_command_action()
-            else:
-                invalid_command_action()
 
+            else:
+                #  invalid_command_action()
+                print(f"'{command}' is an unrecognized command. Please provide a valid command.")
+                
+                
         # print("Welcome to the assistant bot!")
         # while True:
         #     user_input = input("Enter a command: ")

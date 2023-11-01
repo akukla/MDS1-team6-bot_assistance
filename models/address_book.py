@@ -15,17 +15,30 @@ class Field:
         return str(self.value)
 
 
-class Birthday(Field):
+#class Birthday(Field):
     
+   # def __init__(self, value):
+        #self.date = birthday_parse_or_throw(value)
+
+    #def __str__(self):
+        #if not self.date:
+           # return "No date"
+        #return self.date.strftime("%d.%m.%Y")
+
+# Birthday Class
+class Birthday(Field):
     def __init__(self, value):
-        self.date = birthday_parse_or_throw(value)
+        if not self.validate(value):
+            raise ValueError(f"Birthday must be in the format DD.MM.YYYY.")
+        self.value = datetime.strptime(value, '%d.%m.%Y').date()
 
-    def __str__(self):
-        if not self.date:
-            return "No date"
-        return self.date.strftime("%d.%m.%Y")
-
-
+    @staticmethod
+    def validate(birthday):
+        try:
+            datetime.strptime(birthday, '%d.%m.%Y')
+            return True
+        except ValueError:
+            return False
 class Name(Field):
     pass
 
@@ -46,7 +59,9 @@ class Record:
         self.name = Name(name)
         self.phone:Optional[Phone] = None
         self.birthday: Optional[Birthday] = None
-
+        self.email: Optional[str] = None
+        self.address: Optional[str] = None
+        
     def add_birthday(self, birthday: str)  -> bool:
         try:
             birthday_obj = Birthday(birthday)
@@ -92,10 +107,17 @@ class AddressBook(BaseClass):
     _filename: str = 'address_book.pcl'
 
     def add_contact(self, name: str, phone: Optional[str] = None, email: Optional[str] = None, address: Optional[str] = None, birthday: Optional[str] = None) -> bool:
-        # TODO: Add contact with non None fields
-        print("TODO: Add contact with non None fields: name: {name}, phone: {phone}, email: {email}, address: {address}, birthday: {birthday}".format(name=name, phone=phone, email=email, address=address, birthday=birthday))
-        return False
-
+        record = Record(name)
+        if phone is not None:
+            record.add_phone(phone) 
+        if email is not None:
+            record.email = email  # Not validating because it was validated in prompt
+        if address is not None:
+            record.address = address  
+        if birthday is not None:
+            record.add_birthday(birthday) 
+        return  self.add_record(record)
+        
     def add_record(self, record: Record) -> bool:
         self.data[record.name.value] = record
         return True
