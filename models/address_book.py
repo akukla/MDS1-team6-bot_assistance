@@ -91,7 +91,7 @@ class AddressBook(BaseClass):
 
     _filename: str = 'address_book.pcl'
 
-    def add_contact(name: str, phone: Optional[str] = None, email: Optional[str] = None, address: Optional[str] = None, birthday: Optional[str] = None) -> bool:
+    def add_contact(self, name: str, phone: Optional[str] = None, email: Optional[str] = None, address: Optional[str] = None, birthday: Optional[str] = None) -> bool:
         # TODO: Add contact with non None fields
         print("TODO: Add contact with non None fields: name: {name}, phone: {phone}, email: {email}, address: {address}, birthday: {birthday}".format(name=name, phone=phone, email=email, address=address, birthday=birthday))
         return False
