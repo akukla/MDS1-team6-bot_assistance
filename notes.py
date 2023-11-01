@@ -1,8 +1,5 @@
-
-from models.base_class import BaseClass
-
 class Note:
-    id_counter = 1 
+    id_counter = 1  # Всеж робимо через інкрімент. Щоб по ньому вобирати що видаляти
 
     def __init__(self, title, text):
         self.id = Note.id_counter
@@ -13,12 +10,9 @@ class Note:
     def __repr__(self):
         return f"ID: {self.id}, Title: {self.title}, Text: {self.text}"
 
-class Notes(BaseClass):
-    _filename = 'notes.pcl'
-
+class NotesModule:
     def __init__(self):
-        super().__init__()
-        self.notes = self.data.get('notes', [])
+        self.notes = []
 
     def add_note(self):
         title = input("Enter the title (max 64 chars): ")[:64]
@@ -31,8 +25,6 @@ class Notes(BaseClass):
             return
         note = Note(title, text)
         self.notes.append(note)
-        self.data['notes'] = self.notes
-        self.save()
         print(f"Note with ID {note.id} added!")
 
     def find_note(self, keyword):
@@ -48,8 +40,6 @@ class Notes(BaseClass):
         confirm = input(f"Do you really want to delete note with ID {note_id}? (yes/no) ")
         if confirm.lower() == 'yes':
             self.notes.remove(note_to_delete)
-            self.data['notes'] = self.notes
-            self.save()
             print("Note deleted!")
 
     def edit_note(self, note_id):
@@ -69,9 +59,6 @@ class Notes(BaseClass):
                 print("Text should be in English.")
                 return
             note_to_edit.text = new_text
-        self.data['notes'] = self.notes
-        self.save()
         print("Note updated!")
 
-
-notes_module = Notes.load_or_create()
+notes_module = NotesModule()
