@@ -3,8 +3,8 @@ from datetime import date
 from models.base_class import BaseClass
 from models.demo_users import demo_users
 
-from exceptions import IncorrectFormatException
-from parsers import *
+from utils.exceptions import IncorrectFormatException
+from utils.parsers import *
 
 
 class Field:
@@ -91,14 +91,26 @@ class AddressBook(BaseClass):
 
     _filename: str = 'address_book.pcl'
 
+    def add_contact(name: str, phone: Optional[str] = None, email: Optional[str] = None, address: Optional[str] = None, birthday: Optional[str] = None) -> bool:
+        # TODO: Add contact with non None fields
+        print("TODO: Add contact with non None fields: name: {name}, phone: {phone}, email: {email}, address: {address}, birthday: {birthday}".format(name=name, phone=phone, email=email, address=address, birthday=birthday))
+        return False
+
     def add_record(self, record: Record) -> bool:
         self.data[record.name.value] = record
         return True
 
-    def find(self, name: str) -> Optional[Record]:
+    def find_full_match(self, name: str) -> Optional[Record]:
         if name in self.data.keys():
             return self.data[name]
         return None
+    
+    def find(self, term: str) -> Optional[list[Record]]:
+        ret = []
+        for key in self.data.keys():
+            if key.lower().find(term.lower()) != -1:
+                ret.append(self.data[key])
+        return ret
     
     def enumerate(self) -> Optional[Record]:
         for item in self.data:
