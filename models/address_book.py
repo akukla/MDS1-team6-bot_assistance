@@ -98,6 +98,7 @@ class AddressBook(BaseClass):
 
     def add_record(self, record: Record) -> bool:
         self.data[record.name.value] = record
+        self.save()
         return True
 
     def find_full_match(self, name: str) -> Optional[Record]:
@@ -123,6 +124,7 @@ class AddressBook(BaseClass):
     def delete(self, name):
         if name in self.data.keys():
             del self.data[name]
+            self.save()
             return True
         return False
     

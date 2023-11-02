@@ -1,6 +1,31 @@
 
 from prompt_toolkit.validation import Validator, ValidationError
 from models.address_book import AddressBook
+from models.notes import Notes
+
+class YesNoValidator(Validator):
+    def __init__(self) -> None:
+        super().__init__()
+
+    def validate(self, document):
+        text = document.text.strip().lower()
+
+        if len(text) > 0 and text not in ['y', 'n']:
+            raise ValidationError(message='Please provide y or n')
+
+class CheckIfNoteDoesntExistValidator(Validator):
+    def __init__(self, notes: Notes) -> None:
+        self.notes = notes
+        super().__init__()
+
+    def validate(self, document):
+        text = document.text
+
+        if len(document.text) > 0:
+            if not text.isascii():
+                raise ValidationError(message='Note should be in English')
+            if self.notes.find_full_match(text) is not None or not text.isascii():
+                raise ValidationError(message='Note with this title already exist')
 
 
 class CheckIfContactDoesntExistValidator(Validator):

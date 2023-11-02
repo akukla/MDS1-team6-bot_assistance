@@ -1,5 +1,6 @@
-from flows.address_book_flows import flow_contact_add, flow_contact_edit, flow_contact_remove
-from flows.common_flow import get_main_completion, parse_input
+from flows.address_book_flows import flow_contact_add, flow_contact_edit, flow_contact_find, flow_contact_remove
+from flows.notes_flows import *
+from flows.common_flow import get_main_completion, parse_input, help_text
 from models.address_book import AddressBook
 from models.notes import Notes
 from actions import *
@@ -31,8 +32,7 @@ def main():
             elif command == "hello":
                 print("How can I help you?")
             elif command == "help":
-                # TODO: Implement help information
-                print("Help is not implemented right now")
+                print(help_text)
             elif module == 'contacts':
                 if command == 'add':
                     print(flow_contact_add(book))
@@ -50,42 +50,41 @@ def main():
                     else:
                         print("Provide valid contact name to remove. Valid format is: contacts remove \"NAME\"")
                 elif command == 'find':
-                    # TODO: Implement find flow
-                    print("Find is not implemented")
+                    if len(args) == 1 and args[0] is not None:
+                        print(flow_contact_find(book, args[0]))
+                    else:
+                        print("Provide valid contact name to remove. Valid format is: contacts remove \"NAME\"")
                 elif command == 'birthdays':
                     # TODO: Implement birthdays flow
                     print("Birthdays is not implemented")
                 else:
                     invalid_command_action()
+            elif module == 'notes':
+                if command == 'add':
+                    print(flow_note_add(notes))
+                elif command == 'all':
+                    print(flow_note_all(notes))
+                elif command == 'find':
+                    if len(args) > 0 and args[0] is not None:
+                        print(flow_note_find(notes, args[0]))
+                    else:
+                        print("Provide valid note title. Valid command format is: notes find \"NAME\"")
+                elif command == 'remove':
+                    if len(args) == 1 and args[0] is not None and notes.find_full_match(args[0]) is not None:
+                        note = notes.find_full_match(args[0])
+                        print(flow_note_remove(notes, note))
+                    else:
+                        print("Provide valid note title. Valid command format is: notes remove \"NAME\"")
+                elif command == 'edit':
+                    if len(args) == 1 and args[0] is not None and notes.find_full_match(args[0]) is not None:
+                        note = notes.find_full_match(args[0])
+                        print(flow_note_edit(notes, note))
+                    else:
+                        print("Provide valid note title. Valid command format is: notes edit \"NAME\"")
+                else:
+                    invalid_command_action()
             else:
                 invalid_command_action()
-
-        # print("Welcome to the assistant bot!")
-        # while True:
-        #     user_input = input("Enter a command: ")
-        #     command, *args = parse_input(user_input)
-
-        #     if command in ["close", "exit"]:
-        #         print("Good bye!")
-        #         break
-        #     elif command == "hello":
-        #         print("How can I help you?")
-        #     elif command == "add":
-        #         print(add_contact(args, book))
-        #     elif command == "change":
-        #         print(change_contact(args, book))
-        #     elif command == "phone":
-        #         print(get_contact(args, book))
-        #     elif command == "all":
-        #         print(get_all_contact(args, book))
-        #     elif command == "birthdays":
-        #         print(print_birthdays(args, book))
-        #     elif command == "add-birthday":
-        #         print(add_birthday(args, book))
-        #     elif command == "show-birthday":
-        #         print(show_birthday(args, book))
-        #     else:
-        #         print("Invalid command.")
 
 
 if __name__ == "__main__":

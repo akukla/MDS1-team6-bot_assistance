@@ -1,76 +1,60 @@
 
+from typing import Optional
 from models.base_class import BaseClass
 
 class Note:
-    id_counter = max(note['id'] for note in notes) 
-
     def __init__(self, title, text):
-        self.id = Note.id_counter
-        Note.id_counter += 1
+        self.id = 0
         self.title = title
         self.text = text
 
     def __repr__(self):
-        return f"ID: {self.id}, Title: {self.title}, \nText: {self.text}"
+        return f"title: {self.title}\n\n{self.text}"
 
 class Notes(BaseClass):
     _filename = 'notes.pcl'
 
     def __init__(self):
         super().__init__()
-        self.notes = self.data.get('notes', [])
+        self.id_counter = 0
 
-    def add_note(self):
-        title = input("Enter the title (max 64 chars, no tags): ")[:64]
-        if not title.isascii():
-            print("Title should be in English.")
-            return
-        text = input("Enter the main text (Add # before a word if you want to make it a tag): ")
-        if not text.isascii():
-            print("Text should be in English.")
-            return
-        note = Note(title, text)
-        self.notes.append(note)
-        self.data['notes'] = self.notes
-        print(f"Note with ID {note.id} added!")
-
-    def find_note(self, keyword):
-        found_notes = [note for note in self.notes if keyword in note.title]
-        for note in sorted(found_notes, key=lambda x: x.id):
-            print(note)
-
-    def delete_note(self, note_id):
-        note_to_delete = next((note for note in self.notes if note.id == note_id), None)
-        if not note_to_delete:
-            print(f"No note with ID {note_id} found.")
-            return
-        confirm = input(f"Do you really want to delete note with ID {note_id}? (yes/no) ")
-        if confirm.lower() == 'yes':
-            self.notes.remove(note_to_delete)
-            self.data['notes'] = self.notes
-            self.save()
-            print("Note deleted!")
-
-    def edit_note(self, note_id):
-        note_to_edit = next((note for note in self.notes if note.id == note_id), None)
-        if not note_to_edit:
-            print(f"No note with ID {note_id} found.")
-            return
-        new_title = input(f"Current title is {note_to_edit.title}. Enter new title or press Enter to skip: ")
-        if new_title:
-            if not new_title.isascii():
-                print("Title should be in English.")
-                return
-            note_to_edit.title = new_title
-        new_text = input(f"Current text is {note_to_edit.text}. Enter new text or press Enter to skip: ")
-        if new_text:
-            if not new_text.isascii():
-                print("Text should be in English.")
-                return
-            note_to_edit.text = new_text
-        self.data['notes'] = self.notes
+    def add(self, title: str, text: Optional[str]) -> Optional[Note]:
+        note = Note(
+            title=title,
+            text=text
+        )
+        self.id_counter += 1
+        note.id = self.id_counter
+        self[note.title] = note
         self.save()
-        print("Note updated!")
+        return note
+
+    def find_notes(self, keyword):
+        ret = []
+        found_notes = [note for note in self.values() if keyword in note.title.lower() or keyword in note.text.lower()]
+        for note in sorted(found_notes, key=lambda x: x.id):
+            ret.append(note)
+        return ret
+    
+    def find_full_match(self, keyword):
+        found_notes = [note for note in self.values() if keyword == note.title]
+        for note in sorted(found_notes, key=lambda x: x.id):
+            if note is not None:
+                return note
+            
+    def all_notes(self):
+        ret = []
+        for note in sorted(self.values(), key=lambda x: x.id):
+            ret.append(note)
+        return ret
+
+    def remove_note(self, note) -> bool:
+        if self.data.pop(note.title) != None:
+            self.save()
+            return True
+        else: 
+            return False
+
 
 # Tags
 
@@ -132,7 +116,4 @@ class Notes(BaseClass):
                 results.append(f" - {title}")
 
         return results
- 
-        
-
-notes_module = Notes.load_or_create()
+    

@@ -14,6 +14,7 @@ from prompt_toolkit.shortcuts import CompleteStyle
 
 GIVE_ME_TEMPLATE_EMPTY_FOR_CANCEL = "Give me <highlighted-text>{entity}</highlighted-text> [<highlighted-text>Empty</highlighted-text> for <highlighted-text>Cancel</highlighted-text>]: "
 GIVE_ME_TEMPLATE_EMPTY_FOR_SKIP = "Give me <highlighted-text>{entity}</highlighted-text> [<highlighted-text>Empty</highlighted-text> for <highlighted-text>Skip</highlighted-text>]: "
+DELETE_CONFIRMATION_CONTACT = "Are you sure. Contact <highlighted-text>{entity}</highlighted-text> will be <highlighted-text>Deleted</highlighted-text> [<highlighted-text>y</highlighted-text>/<highlighted-text>n</highlighted-text>, dafault:<highlighted-text>n</highlighted-text>]: "
 
 def flow_contact_add(book: AddressBook) -> str:
     contact_name = prompt(HTML(
@@ -124,6 +125,16 @@ def flow_contact_edit(book: AddressBook, args: list[str]) -> str:
     return None
 
 def flow_contact_remove(book: AddressBook, record: Record) -> str:
-    # TODO: Add confirmation and remove contact
+    confirmation = prompt(HTML(
+        DELETE_CONFIRMATION_CONTACT.format(entity=record.name.value)
+    ), style=style, validator=YesNoValidator())
 
-    return "Contact removal is not implemented right now"
+    if confirmation == 'y':
+        book.delete(record.name.value)
+        return "Contact removed"
+
+    return "Canceled"
+
+def flow_contact_find(book: AddressBook, term: str) -> str:
+    # TODO: Format output and show meesage if result is empty
+    return '\n-----\n'.join([str(note) for note in book.find(term)])
