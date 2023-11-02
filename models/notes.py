@@ -2,7 +2,7 @@
 from models.base_class import BaseClass
 
 class Note:
-    id_counter = 1 
+    id_counter = max(note['id'] for note in notes) 
 
     def __init__(self, title, text):
         self.id = Note.id_counter
@@ -11,7 +11,7 @@ class Note:
         self.text = text
 
     def __repr__(self):
-        return f"ID: {self.id}, Title: {self.title}, Text: {self.text}"
+        return f"ID: {self.id}, Title: {self.title}, \nText: {self.text}"
 
 class Notes(BaseClass):
     _filename = 'notes.pcl'
@@ -21,18 +21,17 @@ class Notes(BaseClass):
         self.notes = self.data.get('notes', [])
 
     def add_note(self):
-        title = input("Enter the title (max 64 chars): ")[:64]
+        title = input("Enter the title (max 64 chars, no tags): ")[:64]
         if not title.isascii():
             print("Title should be in English.")
             return
-        text = input("Enter the main text: ")
+        text = input("Enter the main text (Add # before a word if you want to make it a tag): ")
         if not text.isascii():
             print("Text should be in English.")
             return
         note = Note(title, text)
         self.notes.append(note)
         self.data['notes'] = self.notes
-        self.save()
         print(f"Note with ID {note.id} added!")
 
     def find_note(self, keyword):
@@ -73,5 +72,67 @@ class Notes(BaseClass):
         self.save()
         print("Note updated!")
 
+# Tags
+
+    def collect_tags(self): # Тимчасова база
+        tempo_tags = {}
+        for note in self.notes:
+            words = note.text.split()
+            for word in words:
+                if word.startswith('#'):
+                    tempo_tags[word] = tempo_tags.get(word, 0) + 1
+            return tempo_tags
+        
+    def all_tags(self): # Від найчастішого до найменьш вживанного
+        tempo_tags = self.collect_tags()
+        sorted_tags = sorted(tempo_tags.items(), key=lambda x: x[1], reverse=True)
+        return sorted_tags   
+    
+    def all_tags_revert(self): # Від найменьш вживанного до найчастішого
+        tempo_tags = self.collect_tags()
+        sorted_tags = sorted(tempo_tags.items(), key=lambda x: x[1], reverse=False)
+        return sorted_tags
+    
+    def alpsort_tags(self): # Сортування за алфавітом: спершу числа, потім літери
+        tempo_tags = self.collect_tags()
+        sorted_tags = sorted(tempo_tags.items(), key=lambda x: (x[0].isnumeric(), x[0].lower()))
+        return sorted_tags
+    
+    def alpsort_tags_revert(self): # Сортування за алфавітом: спершу останні літери, в конці цифри
+        tempo_tags = self.collect_tags()
+        sorted_tags = sorted(tempo_tags.items(), key=lambda x: (x[0].isnumeric(), x[0].lower()), reverse=True)
+        return sorted_tags
+    
+    def find_tag(self, query): # Пошук записів по тегах у тексті
+        if query.startswith("#"):
+            query = query[1:]
+
+        if len(query) > 127:
+            print("The query is too long!")
+            return
+            
+        matching_tags = {}
+
+        for note in self.notes:
+            words = note.text.split()
+            for word in words:
+                if word.startswith('#'):
+                    cleaned_word = word[1:]
+                    if cleaned_word.startswith(query):
+                        if cleaned_word not in matching_tags:
+                            matching_tags[cleaned_word] = []
+                        matching_tags[cleaned_word].append(note.title)
+
+        sorted_tags = sorted(matching_tags.keys(), key=lambda k: (len(k) - len(query), k))
+
+        results = []
+        for tag in sorted_tags:
+            results.append(f"Tag: #{tag}")
+            for title in matching_tags[tag]:
+                results.append(f" - {title}")
+
+        return results
+ 
+        
 
 notes_module = Notes.load_or_create()
