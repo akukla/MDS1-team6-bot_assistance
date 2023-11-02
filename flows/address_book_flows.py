@@ -47,7 +47,7 @@ def flow_contact_add(book: AddressBook) -> str:
     if len(contact_birthday.strip()) == 0:
         contact_birthday = None
 
-    return "Contact added" if book.add_contact(contact_name, phone=contact_phone, email=contact_email, address=contact_address) == True else "Contact was not added"
+    return "Contact added" if book.add_contact(contact_name, phone=contact_phone, email=contact_email, address=contact_address, birthday=contact_birthday) == True else "Contact was not added"
 
 def flow_contact_edit(book: AddressBook, args: list[str]) -> str:
     contact_name: Optional[str] = None

@@ -153,7 +153,7 @@ class PhoneValidator(Validator):
         """
         text = document.text.strip()
 
-        if len(text) != 10 or not text.isdigit():
+        if len(text) > 0 and (len(text) != 10 or not text.isdigit()):
             raise ValidationError(
                 message='Invalid phone format. Phone should contain 10 digits.')
 
@@ -173,7 +173,7 @@ class EmailValidator(Validator):
         text = document.text
 
         pattern = r"^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
-        if not re.match(pattern, text):
+        if len(text) > 0 and not re.match(pattern, text):
             raise ValidationError(
                 message='Invalid email format.')
 
@@ -191,9 +191,9 @@ class DateValidator(Validator):
             ValidationError: If the date format is invalid.
         """
         text = document.text
-
-        try:
-            datetime.strptime(text, '%d.%m.%Y')
-        except ValueError as e:
-            raise ValidationError(
-                message='Invalid birthday format. Use DD.MM.YYYY') from e
+        if len(text) > 0:
+            try:
+                datetime.strptime(text, '%d.%m.%Y')
+            except ValueError as e:
+                raise ValidationError(
+                    message='Invalid birthday format. Use DD.MM.YYYY') from e

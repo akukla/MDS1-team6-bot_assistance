@@ -72,7 +72,7 @@ Commands:
             edit "CONTACT_NAME" - edit contact
             remove "CONTACT_NAME" - remove contact
             find "CONTACT_NAME" - find contact
-            birthdays "DAYS" - show cobtacts birthdays in "DAYS" days
+            birthdays "DAYS" - show contacts birthdays in "DAYS" days
 
         notes
             add - add new note

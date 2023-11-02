@@ -17,8 +17,8 @@ class Field:
 
 class Birthday(Field):
     
-    def __init__(self, value):
-        self.date = birthday_parse_or_throw(value)
+    def __init__(self, value:Optional[str] = None):
+        self.date: datetime = birthday_parse_or_throw(value) if value else None
 
     def __str__(self):
         if not self.date:
@@ -26,7 +26,15 @@ class Birthday(Field):
         return self.date.strftime("%d.%m.%Y")
 
 
+class Address(Field):
+    pass
+
+
 class Name(Field):
+    pass
+
+
+class Email(Field):
     pass
 
 
@@ -46,6 +54,26 @@ class Record:
         self.name = Name(name)
         self.phone:Optional[Phone] = None
         self.birthday: Optional[Birthday] = None
+        self.email: Optional[Email] = None
+        self.address: Optional[Address] = None
+
+    def add_address(self, address: str)  -> bool:
+        try:
+            address_obj = Address(address)
+        except IncorrectFormatException:
+            print("Incorrect address format")
+            return False
+        self.address = address_obj
+        return True
+
+    def add_email(self, email: str)  -> bool:
+        try:
+            email_obj = Email(email)
+        except IncorrectFormatException:
+            print("Incorrect email format")
+            return False
+        self.email = email_obj
+        return True
 
     def add_birthday(self, birthday: str)  -> bool:
         try:
@@ -59,7 +87,9 @@ class Record:
     def _add_birthday_datetime(self, birthday: datetime)  -> bool:
         if birthday is None:
             return False
-        self.birthday = birthday
+        birthday_record = Birthday()
+        birthday_record.date = birthday
+        self.birthday = birthday_record
         return True
 
     def add_phone(self, phone: str) -> bool:
@@ -84,6 +114,10 @@ class Record:
         ret = f"Contact name: {self.name.value}, phone: {self.phone}"
         if self.birthday is not None:
             ret += f", birthday: {self.birthday}"
+        if self.email is not None:
+            ret += f", email: {self.email}"
+        if self.address is not None:
+            ret += f", address: {self.address}"
         return ret
 
 
@@ -92,9 +126,19 @@ class AddressBook(BaseClass):
     _filename: str = 'address_book.pcl'
 
     def add_contact(self, name: str, phone: Optional[str] = None, email: Optional[str] = None, address: Optional[str] = None, birthday: Optional[str] = None) -> bool:
-        # TODO: Add contact with non None fields
-        print("TODO: Add contact with non None fields: name: {name}, phone: {phone}, email: {email}, address: {address}, birthday: {birthday}".format(name=name, phone=phone, email=email, address=address, birthday=birthday))
-        return False
+        record = Record(name)
+        if phone is not None:
+            record.add_phone(phone) 
+        if email is not None:
+            record.email = email  # Not validating because it was validated in prompt
+        if address is not None:
+            record.address = address  
+        if birthday is not None:
+            record.add_birthday(birthday) 
+        ret = self.add_record(record)
+        if ret:
+            self.save()
+        return ret
 
     def add_record(self, record: Record) -> bool:
         self.data[record.name.value] = record
