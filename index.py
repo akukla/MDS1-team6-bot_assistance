@@ -52,7 +52,7 @@ def main():
                         print(
                             "Provide valid contact name to remove. Valid format is: contacts remove \"NAME\"")
                 elif command == 'find':
-                    if args is not None:
+                    if len(args) > 0 and args[0] is not None:
                         invalid_command_action()
                         continue
 

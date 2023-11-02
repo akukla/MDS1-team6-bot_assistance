@@ -30,6 +30,8 @@ def parse_input(user_input) -> tuple[str, Optional[str], Optional[list]]:
         return (module, cmd, *args)
 
 # TODO: Update help for tags section
+
+
 def get_main_completion(book: AddressBook, notes: Notes) -> Completer:
     return NestedCompleter.from_nested_dict({
         'contacts': {
@@ -55,7 +57,7 @@ def get_main_completion(book: AddressBook, notes: Notes) -> Completer:
             'alpsort_tags': None,
             'alpsort_tags_revert': None,
         },
-        
+
         'help': None,
         'exit': None,
         'close': None,
@@ -80,7 +82,7 @@ Commands:
             all - show all contacts
             edit "CONTACT_NAME" - edit contact
             remove "CONTACT_NAME" - remove contact
-            find "CONTACT_NAME" - find contact
+            find - find contact
             birthdays "DAYS" - show contacts birthdays in "DAYS" days
 
         notes
