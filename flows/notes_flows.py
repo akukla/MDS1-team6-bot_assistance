@@ -77,6 +77,7 @@ def flow_note_edit(notes: Notes, note: Note) -> str:
             text_value = None
 
         note.text = text_value
+        notes.update_tags()
         res = True
     
     return "Note updated" if res else "Note was not updated"
@@ -84,3 +85,29 @@ def flow_note_edit(notes: Notes, note: Note) -> str:
 def flow_note_all(notes: Notes) -> str:
     # TODO: format note
     return '\n-----\n'.join([str(note) for note in notes.all_notes()])
+
+
+def flow_tags_find_by_tag(notes: Notes, args: list[Optional[str]]) -> str:
+    query: Optional[str] = args[0] if len(args) > 0 else None
+
+    if query == None:
+        query = prompt("Give me Tag Name: ", style=style, completer=WordCompleter(notes.collect_tags(), ignore_case=True,))
+    
+    # TODO: Format output. ATTENTION, it has strange output from find_tag method
+    return str(notes.find_tag(query))
+
+def flow_tags_all_tags(notes: Notes) -> str:
+     # TODO: Format output
+    return str(notes.all_tags())
+
+def flow_tags_all_tags_revert(notes: Notes) -> str:
+     # TODO: Format output
+    return str(notes.all_tags_revert())
+
+def flow_tags_alpsort_tags(notes: Notes) -> str:
+     # TODO: Format output
+    return str(notes.alpsort_tags())
+
+def flow_tags_alpsort_tags_revert(notes: Notes) -> str:
+     # TODO: Format output
+    return str(notes.all_tags_revert())

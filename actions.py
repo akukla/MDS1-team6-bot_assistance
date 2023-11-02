@@ -34,7 +34,7 @@ def get_contact(args, book: AddressBook):
 
 
 def get_all_contacts(book: AddressBook):
-    # TODO: Update 
+    # TODO: Format output 
     if len(book) == 0:
         return 'Address book is empty'
     ret = []

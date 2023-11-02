@@ -1,4 +1,4 @@
-from flows.address_book_flows import flow_contact_add, flow_contact_edit, flow_contact_find, flow_contact_remove
+from flows.address_book_flows import flow_contact_add, flow_contact_birthdays, flow_contact_edit, flow_contact_find, flow_contact_remove
 from flows.notes_flows import *
 from flows.common_flow import get_main_completion, parse_input, help_text
 from models.address_book import AddressBook
@@ -58,8 +58,7 @@ def main():
 
                     print(flow_contact_find(book))
                 elif command == 'birthdays':
-                    # TODO: Implement birthdays flow
-                    print("Birthdays is not implemented")
+                    flow_contact_birthdays(book, args=args)
                 else:
                     invalid_command_action()
             elif module == 'notes':
@@ -87,6 +86,20 @@ def main():
                     else:
                         print(
                             "Provide valid note title. Valid command format is: notes edit \"NAME\"")
+                else:
+                    invalid_command_action()
+
+            elif module == 'tags':
+                if command == 'find_by_tag':
+                    print(flow_tags_find_by_tag(notes, args))
+                elif command == 'all_tags':
+                    print(flow_tags_all_tags(notes))
+                elif command == 'all_tags_revert':
+                    print(flow_tags_all_tags_revert(notes))
+                elif command == 'alpsort_tags':
+                    print(flow_tags_alpsort_tags(notes))
+                elif command == 'alpsort_tags_revert':
+                    print(flow_tags_alpsort_tags_revert(notes))
                 else:
                     invalid_command_action()
             else:

@@ -87,8 +87,10 @@ def flow_contact_edit(book: AddressBook, args: list[str]) -> str:
     if len(contact_name.strip()) == 0:
         return 'Canceled'
 
-    available_fields = ["phone", "email", "address", "birthday"]
-    field_completion = WordCompleter(available_fields, ignore_case=True)
+    record = book.find_full_match(contact_name)
+
+    available_fields = ["phone", "email", "address", "birthday",]
+    field_completion = WordCompleter(available_fields, ignore_case=True,)
 
     field = prompt(
         HTML(
@@ -109,9 +111,9 @@ def flow_contact_edit(book: AddressBook, args: list[str]) -> str:
         ).strip()
 
         if len(value_for_editing) == 0:
-            # TODO: Implement delete phone number from contact
-            return 'Delete Phone'
-        # TODO: implement change contact phone
+            record.phone = None
+            return 'Phone was deleted'
+        record.edit_phone(value_for_editing)
         return "Phone was changed"
     elif field == 'email':
         value_for_editing = prompt(
@@ -122,9 +124,9 @@ def flow_contact_edit(book: AddressBook, args: list[str]) -> str:
         ).strip()
 
         if len(value_for_editing) == 0:
-            # TODO: Implement delete email from contact
-            return 'Delete Email'
-        # TODO: implement change email
+            record.email = None
+            return 'Email was deleted'
+        record.add_email(value_for_editing)
         return "Email was changed"
     elif field == 'birthday':
         value_for_editing = prompt(
@@ -135,9 +137,9 @@ def flow_contact_edit(book: AddressBook, args: list[str]) -> str:
         ).strip()
 
         if len(value_for_editing) == 0:
-            # TODO: Implement delete birthday for contact
+            record.birthday = None
             return 'Delete birthday'
-        # TODO: implement change birthday
+        record.add_birthday(value_for_editing)
         return "Birthday was changed"
     elif field == 'address':
         value_for_editing = prompt(
@@ -147,9 +149,9 @@ def flow_contact_edit(book: AddressBook, args: list[str]) -> str:
         ).strip()
 
         if len(value_for_editing) == 0:
-            # TODO: Implement delete address for contact
+            record.address = None
             return 'Delete address'
-        # TODO: implement change address
+        record.address = value_for_editing
         return "Address was changed"
 
     # It is impossible to reach this line if validators work fine
@@ -253,3 +255,34 @@ def flow_contact_find(book: AddressBook) -> str:
         table += "\n"
 
     return table
+
+def flow_contact_birthdays(book: AddressBook, args: list[str]) -> str:
+    delta_days = 0
+    if len(args) > 0 and args[0] is not None:
+        try:
+            DateDeltaValidator.validate_text(args[0])
+            delta_days = int(args[0])
+        except ValidationError:
+            pass
+            # return DateDeltaValidator.message
+    
+    if delta_days == 0:
+        while True:
+            str_value = prompt(
+                        HTML(f"How many <highlighted-text>days</highlighted-text> should i add from today to shouw birthdays? [<highlighted-text>Empty</highlighted-text> to <highlighted-text>Cancel</highlighted-text>]: "),
+                        style=style,
+                        validator=DateDeltaValidator()
+                    ).strip()
+                    
+            if len(str_value) == 0:
+                return 'Canceled'
+            else:
+                try:
+                    DateDeltaValidator.validate_text(str_value)
+                    delta_days = int(str_value)
+                    break
+                except ValidationError:
+                    print("Provide valid days count. Valid command format is: contacts birthdays DAYS")
+    
+    records = book.get_birthdays(delta_days)
+    return "\n-----\n".join([str(record) for record in records])

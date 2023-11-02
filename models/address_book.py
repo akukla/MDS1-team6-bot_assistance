@@ -1,5 +1,5 @@
 from typing import Optional
-from datetime import date
+from datetime import date, timedelta
 from models.base_class import BaseClass
 from models.demo_users import demo_users
 
@@ -16,7 +16,6 @@ class Field:
 
 
 class Birthday(Field):
-
     def __init__(self, value: Optional[str] = None):
         self.date: datetime = birthday_parse_or_throw(value) if value else None
 
@@ -198,18 +197,14 @@ class AddressBook(BaseClass):
             record._add_birthday_datetime(user['birthday'])
             self.add_record(record)
 
-    def get_birthdays_per_week(self) -> list[str]:
-        return_list = []
+    def get_birthdays(self, delta_days: int) -> list[Record]:
+        ret = []
+        # TODO: This is placefolder. Implement real logic
+        next_date = datetime.today() + timedelta(days=delta_days)
+        print(next_date)
         today = date.today()
-        # Debug
-        # today = today.replace(day=today.day + 4)
-        # print(today)
-        ret = {}
-        week_days = ["Monday", "Tuesday", "Wednesday",
-                     "Thursday", "Friday", "Saturday", "Sunday"]
         for key in self.data:
             user: Record = self.data[key]
-            name = user.name.value
             if user.birthday is None or user.birthday.date is None:
                 continue
             birthday = user.birthday.date
@@ -218,25 +213,45 @@ class AddressBook(BaseClass):
                 birthday_this_year = birthday.replace(year=today.year + 1)
             delta_days = (birthday_this_year - today).days
             if delta_days < 7:
-                delta_days = birthday_this_year.weekday()
-                if not delta_days in ret:
-                    ret[delta_days] = []
-                ret[delta_days].append(name)
-        buff = []
-        for day_index_from_today in range(today.weekday(), today.weekday() + 7):
-            index = day_index_from_today % 7
-            if index in ret:
-                if index == 0:
-                    buff.extend(ret[index])
-                    if len(buff) > 0:
-                        return_list.append(
-                            f'{week_days[index]}: {", ".join(buff)}')
-                    buff.clear()
-                elif index < 5:
-                    return_list.append(
-                        f'{week_days[index]}: {", ".join(ret[index])}')
-                else:
-                    buff.extend(ret[index])
-        if len(buff) > 0:
-            return_list.append(f'{week_days[0]}: {", ".join(buff)}')
-        return return_list
+                ret.append(user)
+        return ret
+    
+    # def get_birthdays_per_week(self) -> list[str]:
+    #     return_list = []
+    #     today = date.today()
+    #     # Debug
+    #     # today = today.replace(day=today.day + 4)
+    #     # print(today)
+    #     ret = {}
+    #     week_days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    #     for key in self.data:
+    #         user: Record = self.data[key]
+    #         name = user.name.value
+    #         if user.birthday is None or user.birthday.date is None:
+    #             continue
+    #         birthday = user.birthday.date
+    #         birthday_this_year = birthday.replace(year=today.year)
+    #         if birthday_this_year < today:
+    #             birthday_this_year = birthday.replace(year=today.year + 1)
+    #         delta_days = (birthday_this_year - today).days
+    #         if delta_days < 7:
+    #             delta_days = birthday_this_year.weekday()
+    #             if not delta_days in ret:
+    #                 ret[delta_days] = []
+    #             ret[delta_days].append(name)
+    #     buff = []
+    #     for day_index_from_today in range(today.weekday(), today.weekday() + 7):
+    #         index = day_index_from_today % 7
+    #         if index in ret:
+    #             if index == 0:
+    #                 buff.extend(ret[index])
+    #                 if len(buff) > 0:
+    #                     return_list.append(f'{week_days[index]}: {", ".join(buff)}')
+    #                 buff.clear()
+    #             elif index < 5:
+    #                 return_list.append(f'{week_days[index]}: {", ".join(ret[index])}')
+    #             else:
+    #                 buff.extend(ret[index])
+    #     if len(buff) > 0:
+    #         return_list.append(f'{week_days[0]}: {", ".join(buff)}')
+    #     return return_list

@@ -197,3 +197,31 @@ class DateValidator(Validator):
             except ValueError as e:
                 raise ValidationError(
                     message='Invalid birthday format. Use DD.MM.YYYY') from e
+            
+
+class DateDeltaValidator(Validator):
+    """Validator to check the format of a date in DD.MM.YYYY format."""
+
+    message = 'Invalid DAYS parameter. DAYS should be integer and gretter than 0'
+
+    @staticmethod
+    def validate_text(text):
+        if len(text) > 0:
+            try:
+                if not int(text) > 0:
+                    raise ValueError
+            except (ValueError, SystemError) as e:
+                raise ValidationError(
+                    message=DateDeltaValidator.message) from e
+
+    def validate(self, document):
+        """Validate the input document for a valid date format.
+
+        Args:
+            document: The document to validate.
+
+        Raises:
+            ValidationError: If the date format is invalid.
+        """
+        text = document.text
+        return self.validate_text(text)
