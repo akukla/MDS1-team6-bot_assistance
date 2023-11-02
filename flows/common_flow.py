@@ -13,7 +13,7 @@ def parse_input(user_input) -> tuple[str, Optional[str], Optional[list]]:
         input_list = shlex.split(user_input)
     except ValueError:
         return (None, None, None)
-    
+
     if len(input_list) == 0:
         return (None, None, None)
     elif len(input_list) == 1:
@@ -37,8 +37,8 @@ def get_main_completion(book: AddressBook, notes: Notes) -> Completer:
             'all': None,
             'edit': SelectUserCompleter(book=book),
             'remove': SelectUserCompleter(book=book),
-            'find': SelectUserCompleter(book=book), # TODO: Update search completer to use several field like Name, Phone, Email and Address
-            'birthdays': None, # TODO: Add birthdays list as completer and Integer value validator
+            'find': None,
+            'birthdays': None,  # TODO: Add birthdays list as completer and Integer value validator
         },
         "notes": {
             'add': None,
@@ -47,12 +47,13 @@ def get_main_completion(book: AddressBook, notes: Notes) -> Completer:
             'remove': FindNotesCompleter(notes=notes),
             'edit': FindNotesCompleter(notes=notes),
         },
-        
+
         'help': None,
         'exit': None,
         'close': None,
         'quit': None
     })
+
 
 help_text = """
 This is a simple assistant bot. It can help you to manage your contacts and notes. 
