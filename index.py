@@ -1,4 +1,4 @@
-from flows.address_book_flows import flow_contact_add, flow_contact_edit, flow_contact_find, flow_contact_remove
+from flows.address_book_flows import flow_contact_add, flow_contact_birthdays, flow_contact_edit, flow_contact_find, flow_contact_remove
 from flows.notes_flows import *
 from flows.common_flow import get_main_completion, parse_input, help_text
 from models.address_book import AddressBook
@@ -55,8 +55,7 @@ def main():
                     else:
                         print("Provide valid contact name to remove. Valid format is: contacts remove \"NAME\"")
                 elif command == 'birthdays':
-                    # TODO: Implement birthdays flow
-                    print("Birthdays is not implemented")
+                    flow_contact_birthdays(book, args=args)
                 else:
                     invalid_command_action()
             elif module == 'notes':

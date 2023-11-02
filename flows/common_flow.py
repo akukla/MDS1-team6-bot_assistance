@@ -38,7 +38,7 @@ def get_main_completion(book: AddressBook, notes: Notes) -> Completer:
             'edit': SelectUserCompleter(book=book),
             'remove': SelectUserCompleter(book=book),
             'find': SelectUserCompleter(book=book), # TODO: Update search completer to use several field like Name, Phone, Email and Address
-            'birthdays': None, # TODO: Add birthdays list as completer and Integer value validator
+            'birthdays': None,
         },
         "notes": {
             'add': None,
