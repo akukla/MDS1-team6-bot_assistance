@@ -1,6 +1,6 @@
 import shlex
 from typing import Optional
-from flows.completion import FindNotesCompleter, SelectUserCompleter
+from flows.completion import FindNotesCompleter, SelectUserCompleter, TagsCompleter
 from models.address_book import AddressBook
 from models.notes import Notes
 from prompt_toolkit.completion import NestedCompleter, DummyCompleter, Completer, Completion
@@ -29,7 +29,7 @@ def parse_input(user_input) -> tuple[str, Optional[str], Optional[list]]:
         module = module.strip().lower()
         return (module, cmd, *args)
 
-
+# TODO: Update help for tags section
 def get_main_completion(book: AddressBook, notes: Notes) -> Completer:
     return NestedCompleter.from_nested_dict({
         'contacts': {
@@ -46,6 +46,14 @@ def get_main_completion(book: AddressBook, notes: Notes) -> Completer:
             'find': FindNotesCompleter(notes=notes),
             'remove': FindNotesCompleter(notes=notes),
             'edit': FindNotesCompleter(notes=notes),
+        },
+
+        "tags": {
+            'find_by_tag': TagsCompleter(notes=notes),
+            'all_tags': None,
+            'all_tags_revert ': None,
+            'alpsort_tags': None,
+            'alpsort_tags_revert': None,
         },
         
         'help': None,
@@ -80,6 +88,13 @@ Commands:
             find "NOTE_TITLE" - find note by title
             remove "NOTE_TITLE" - remove note by title
             edit "NOTE_TITLE" - edit note by title
+
+        tags
+            find_by_tag - find an sort notes by tag
+            all_tags - 
+            all_tags_revert - 
+            alpsort_tags - 
+            alpsort_tags_revert - 
         
         help - show this help
         exit or close or quit - close application

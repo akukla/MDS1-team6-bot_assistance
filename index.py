@@ -82,6 +82,20 @@ def main():
                         print("Provide valid note title. Valid command format is: notes edit \"NAME\"")
                 else:
                     invalid_command_action()
+
+            elif module == 'tags':
+                if command == 'find_by_tag':
+                    print(flow_tags_find_by_tag(notes, args))
+                elif command == 'all_tags':
+                    print(flow_tags_all_tags(notes))
+                elif command == 'all_tags_revert':
+                    print(flow_tags_all_tags_revert(notes))
+                elif command == 'alpsort_tags':
+                    print(flow_tags_alpsort_tags(notes))
+                elif command == 'alpsort_tags_revert':
+                    print(flow_tags_alpsort_tags_revert(notes))
+                else:
+                    invalid_command_action()
             else:
                 invalid_command_action()
 

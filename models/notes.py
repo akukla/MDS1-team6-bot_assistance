@@ -16,6 +16,7 @@ class Notes(BaseClass):
 
     def __init__(self):
         super().__init__()
+        self._cached_tags: Optional[list[str]] = None
         self.id_counter = 0
 
     def add(self, title: str, text: Optional[str]) -> Optional[Note]:
@@ -27,6 +28,7 @@ class Notes(BaseClass):
         note.id = self.id_counter
         self[note.title] = note
         self.save()
+        self.update_tags()
         return note
 
     def find_notes(self, keyword):
@@ -49,23 +51,29 @@ class Notes(BaseClass):
         return ret
 
     def remove_note(self, note) -> bool:
+        self.update_tags()
         if self.data.pop(note.title) != None:
             self.save()
             return True
         else: 
             return False
+        
+    def update_tags(self):
+        self._cached_tags = None
 
 
 # Tags
 
-    def collect_tags(self): # Тимчасова база
+    def collect_tags(self) -> list[str]: # Тимчасова база
+        if self._cached_tags is not None:
+            return self._cached_tags
         tempo_tags = {}
-        for note in self.notes:
+        for note in self.values():
             words = note.text.split()
             for word in words:
                 if word.startswith('#'):
                     tempo_tags[word] = tempo_tags.get(word, 0) + 1
-            return tempo_tags
+        return tempo_tags.keys()
         
     def all_tags(self): # Від найчастішого до найменьш вживанного
         tempo_tags = self.collect_tags()
@@ -97,7 +105,7 @@ class Notes(BaseClass):
             
         matching_tags = {}
 
-        for note in self.notes:
+        for note in self.values():
             words = note.text.split()
             for word in words:
                 if word.startswith('#'):
