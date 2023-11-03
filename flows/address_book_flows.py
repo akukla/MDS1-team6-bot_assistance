@@ -274,7 +274,7 @@ def flow_contact_birthdays(book: AddressBook, args: list[str]) -> str:
         while True:
             str_value = prompt(
                 HTML(
-                    f"How many <highlighted-text>days</highlighted-text> should i add from today to shouw birthdays? [<highlighted-text>Empty</highlighted-text> to <highlighted-text>Cancel</highlighted-text>]: "),
+                    f"How many <highlighted-text>days</highlighted-text> should I add from today to show birthdays? [<highlighted-text>Empty</highlighted-text> to <highlighted-text>Cancel</highlighted-text>]: "),
                 style=style,
                 validator=DateDeltaValidator()
             ).strip()
@@ -291,5 +291,6 @@ def flow_contact_birthdays(book: AddressBook, args: list[str]) -> str:
                         "Provide valid days count. Valid command format is: contacts birthdays DAYS")
 
     records = book.get_birthdays(delta_days)
-    # TODO: Format output
+     # Format and return the output: if there are contacts with matching birthdays, join their string representations with a separator; otherwise, return a message indicating no birthdays were found in the specified range.
     return "\n-----\n".join([str(record) for record in records]) if len(records) > 0 else f"You don't have any birthdays in {delta_days} days"
+

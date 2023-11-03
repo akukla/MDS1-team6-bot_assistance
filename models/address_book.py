@@ -198,15 +198,24 @@ class AddressBook(BaseClass):
             self.add_record(record)
 
     def get_birthdays(self, delta_days: int) -> list[Record]:
+         # Initialize an empty list to store contacts whose birthdays match the criteria
         ret = []
+        # Calculate the date to compare against by adding the specified number of days to the current date, with time set to midnight
         required_date = datetime.today().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=10)
+        # Loop through each contact in the address book
         for key in self.data:
+            # Get the current contact record
             user: Record = self.data[key]
+            # Skip the contact if the birthday is None or the date part of the birthday is None
             if user.birthday is None or user.birthday.date is None:
                 continue
+           
             today = datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
+            # Determine the contact's next birthday: if the birthday has passed this year, use next year's date; otherwise, use this year's date
             contact_date = user.birthday.date.replace(year=datetime.today().year) if user.birthday.date.replace(year=datetime.today().year) > today else user.birthday.date.replace(year=datetime.today().year + 1)
             delta = (contact_date - today).days
+            # If the contact's birthday is the required number of days from today, add it to the list
             if delta == delta_days:
                 ret.append(user)
+         # Return the list of contacts whose birthdays match the criteria
         return ret
