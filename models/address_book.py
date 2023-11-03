@@ -129,9 +129,9 @@ class AddressBook(BaseClass):
         if phone is not None:
             record.add_phone(phone)
         if email is not None:
-            record.email = email  # Not validating because it was validated in prompt
+            record.add_email(email)  # Not validating because it was validated in prompt
         if address is not None:
-            record.address = address
+            record.add_address(address)
         if birthday is not None:
             record.add_birthday(birthday)
         ret = self.add_record(record)
@@ -168,9 +168,9 @@ class AddressBook(BaseClass):
                 ret.append(v)
             elif field == "birthday" and v.birthday is not None and str(v.birthday).find(value) != -1:
                 ret.append(v)
-            elif field == "email" and v.email is not None and v.email.find(value) != -1:
+            elif field == "email" and v.email is not None and v.email.value.find(value) != -1:
                 ret.append(v)
-            elif field == "address" and v.address is not None and v.address.find(value) != -1:
+            elif field == "address" and v.address is not None and v.address.value.find(value) != -1:
                 ret.append(v)
 
         return ret

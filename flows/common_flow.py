@@ -46,12 +46,13 @@ def get_main_completion(book: AddressBook, notes: Notes) -> Completer:
             'add': None,
             'all': None,
             'find': FindNotesCompleter(notes=notes),
+            'find_by_tag': TagsCompleter(notes=notes),
             'remove': FindNotesCompleter(notes=notes),
             'edit': FindNotesCompleter(notes=notes),
         },
 
         "tags": {
-            'find_by_tag': TagsCompleter(notes=notes),
+            'find_tag': TagsCompleter(notes=notes),
             'all_tags': None,
             'all_tags_revert ': None,
             'alpsort_tags': None,
@@ -89,13 +90,14 @@ Commands:
             add - add new note
             all - show all notes
             find "NOTE_TITLE" - find note by title
+            find_by_tag "TAG" - find notes by tag
             remove "NOTE_TITLE" - remove note by title
             edit "NOTE_TITLE" - edit note by title
 
         tags
-            find_by_tag - find an sort notes by tag
-            all_tags - 
-            all_tags_revert - 
+            find_tag - find tag and show all note title with this tag
+            all_tags -
+            all_tags_revert -
             alpsort_tags - 
             alpsort_tags_revert - 
         
