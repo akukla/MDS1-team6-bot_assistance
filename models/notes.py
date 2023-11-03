@@ -93,7 +93,6 @@ class Notes(BaseClass):
 
     def all_tags(self):  # Від найчастішого до найменьш вживанного
         tempo_tags = self.collect_tags()
-        print(tempo_tags)
         sorted_tags = sorted(tempo_tags, reverse=True)
         return sorted_tags
 

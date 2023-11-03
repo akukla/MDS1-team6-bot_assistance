@@ -2,7 +2,6 @@ from typing import Optional
 from flows.completion import SelectUserCompleter
 from models.address_book import AddressBook
 from models.notes import Notes
-from actions import *
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import NestedCompleter, DummyCompleter, WordCompleter
 from prompt_toolkit.validation import Validator
@@ -30,7 +29,6 @@ def flow_note_add(notes: Notes) -> str:
         text_value = None
 
     return "Note added" if notes.add(title=title_value, text=text_value) != None else "Note was not added"
-
 
 
 def flow_note_find(notes: Notes, term: str) -> str:
@@ -140,25 +138,20 @@ def flow_tags_find_tag(notes: Notes, args: list[Optional[str]]) -> str:
     return result_str
 
 
-
 def flow_tags_all_tags(notes: Notes) -> str:
     return ', '.join(["#" + str(tag) for tag in notes.all_tags()])
     
 
-
 def flow_tags_all_tags_revert(notes: Notes) -> str:
     return ', '.join(["#" + str(tag) for tag in notes.all_tags_revert()])
-
 
 
 def flow_tags_alpsort_tags(notes: Notes) -> str:
     return ', '.join(["#" + str(tag) for tag in notes.alpsort_tags()])
 
 
-
 def flow_tags_alpsort_tags_revert(notes: Notes) -> str:
     return ', '.join(["#" + str(tag) for tag in notes.all_tags_revert()])
-
 
 
 def flow_notes_find_by_tag(notes, tag: Optional[str]) -> str:
