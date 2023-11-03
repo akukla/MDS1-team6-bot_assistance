@@ -20,8 +20,8 @@ DELETE_CONFIRMATION_NOTE = "Are you sure. Note will be <highlighted-text>Deleted
 
 def flow_note_add(notes: Notes) -> str:
     title_value = prompt(HTML(
-            GIVE_ME_TEMPLATE_EMPTY_FOR_CANCEL.format(entity="Note title")
-        ), style=style, validator=CheckIfNoteDoesntExistValidator(notes))
+        GIVE_ME_TEMPLATE_EMPTY_FOR_CANCEL.format(entity="Note title")
+    ), style=style, validator=CheckIfNoteDoesntExistValidator(notes))
     if len(title_value.strip()) == 0:
         return 'Canceled'
     
@@ -31,18 +31,29 @@ def flow_note_add(notes: Notes) -> str:
 
     return "Note added" if notes.add(title=title_value, text=text_value) != None else "Note was not added"
 
-def flow_note_show(note) -> str:
-    # TODO: format note
-    return str(note)
 
 def flow_note_find(notes: Notes, term: str) -> str:
-    # TODO: format note
-    return '\n-----\n'.join([str(note) for note in notes.find_notes(term)])
+    delimeter_str = "\n" + "*" * 80 + "\n"
+    notes_str = delimeter_str
+
+    filtered_notes = notes.find_notes(term)
+
+    if len(filtered_notes) == 0:
+        return "No notes found."
+
+    for note in filtered_notes:
+        notes_str += "\n" + note.title + "\n"
+        notes_str += "-" * len(note.title) + "\n\n"
+        notes_str += note.text if note.text else ""
+        notes_str += delimeter_str
+
+    return notes_str
+
 
 def flow_note_remove(notes: Notes, note: Note) -> str:
     confirmation = prompt(HTML(
-            DELETE_CONFIRMATION_NOTE
-        ), style=style, validator=YesNoValidator())
+        DELETE_CONFIRMATION_NOTE
+    ), style=style, validator=YesNoValidator())
 
     if confirmation == 'y':
         if notes.remove_note(note):
@@ -51,7 +62,8 @@ def flow_note_remove(notes: Notes, note: Note) -> str:
             return "Note was not removed"
     else:
         return "Canceled"
-    
+
+
 def flow_note_edit(notes: Notes, note: Note) -> str:
     template = "Would you like to edit Note {field}? [<highlighted-text>y</highlighted-text>/<highlighted-text>n</highlighted-text>, dafault:<highlighted-text>n</highlighted-text>]: "
     res = False
@@ -62,7 +74,8 @@ def flow_note_edit(notes: Notes, note: Note) -> str:
     ), style=style, validator=YesNoValidator())
 
     if confirmation == 'y':
-        title_value = prompt(HTML(GIVE_ME_TEMPLATE_EMPTY_FOR_CANCEL.format(entity="Note title")), style=style, validator=CheckIfNoteDoesntExistValidator(notes))
+        title_value = prompt(HTML(GIVE_ME_TEMPLATE_EMPTY_FOR_CANCEL.format(
+            entity="Note title")), style=style, validator=CheckIfNoteDoesntExistValidator(notes))
         note.title = title_value
         res = True
 
@@ -72,45 +85,66 @@ def flow_note_edit(notes: Notes, note: Note) -> str:
     ), style=style, validator=YesNoValidator())
 
     if confirmation == 'y':
-        text_value = prompt("Give me Note Text. Add # before a word if you want to make it a tag: (ESCAPE followed by ENTER to accept)\n > ", multiline=True, default=note.text)
+        text_value = prompt(
+            "Give me Note Text. Add # before a word if you want to make it a tag: (ESCAPE followed by ENTER to accept)\n > ", multiline=True, default=note.text)
         if len(text_value.strip()) == 0:
             text_value = None
 
         note.text = text_value
         notes.update_tags()
         res = True
-    
+
     return "Note updated" if res else "Note was not updated"
 
+
 def flow_note_all(notes: Notes) -> str:
-    # TODO: format note
-    return '\n-----\n'.join([str(note) for note in notes.all_notes()])
+    delimeter_str = "\n" + "*" * 80 + "\n"
+    notes_str = delimeter_str
+
+    notes_to_print = notes.all_notes()
+
+    if len(notes_to_print) == 0:
+        return "No notes to print."
+
+    for note in notes_to_print:
+        notes_str += "\n" + note.title + "\n"
+        notes_str += "-" * len(note.title) + "\n\n"
+        notes_str += note.text if note.text else ""
+        notes_str += delimeter_str
+
+    return notes_str
 
 
 def flow_tags_find_tag(notes: Notes, args: list[Optional[str]]) -> str:
     query: Optional[str] = args[0] if len(args) > 0 else None
 
     if query == None:
-        query = prompt("Give me Tag Name: ", style=style, completer=WordCompleter(notes.collect_tags(), ignore_case=True,))
-    
+        query = prompt("Give me Tag Name: ", style=style, completer=WordCompleter(
+            notes.collect_tags(), ignore_case=True,))
+
     # TODO: Format output. ATTENTION, it has strange output from find_tag method
     return str(notes.find_tag(query))
 
+
 def flow_tags_all_tags(notes: Notes) -> str:
-     # TODO: Format output
+    # TODO: Format output
     return str(notes.all_tags())
 
+
 def flow_tags_all_tags_revert(notes: Notes) -> str:
-     # TODO: Format output
+    # TODO: Format output
     return str(notes.all_tags_revert())
+
 
 def flow_tags_alpsort_tags(notes: Notes) -> str:
-     # TODO: Format output
+    # TODO: Format output
     return str(notes.alpsort_tags())
 
+
 def flow_tags_alpsort_tags_revert(notes: Notes) -> str:
-     # TODO: Format output
+    # TODO: Format output
     return str(notes.all_tags_revert())
+
 
 def flow_notes_find_by_tag(notes, tag: Optional[str]) -> str:
     if tag is None:
