@@ -39,7 +39,6 @@ class Notes(BaseClass):
         self.id_counter += 1
         note.id = self.id_counter
         self[note.title] = note
-        self.save()
         self.update_tags()
         return note
 
@@ -65,7 +64,6 @@ class Notes(BaseClass):
     def remove_note(self, note) -> bool:
         self.update_tags()
         if self.data.pop(note.title) != None:
-            self.save()
             return True
         else:
             return False
