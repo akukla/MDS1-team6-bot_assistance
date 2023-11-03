@@ -58,7 +58,7 @@ def main():
 
                     print(flow_contact_find(book))
                 elif command == 'birthdays':
-                    flow_contact_birthdays(book, args=args)
+                    print(flow_contact_birthdays(book, args=args))
                 else:
                     invalid_command_action()
             elif module == 'notes':

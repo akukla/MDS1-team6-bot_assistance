@@ -291,4 +291,5 @@ def flow_contact_birthdays(book: AddressBook, args: list[str]) -> str:
                         "Provide valid days count. Valid command format is: contacts birthdays DAYS")
 
     records = book.get_birthdays(delta_days)
-    return "\n-----\n".join([str(record) for record in records])
+    # TODO: Format output
+    return "\n-----\n".join([str(record) for record in records]) if len(records) > 0 else f"You don't have any birthdays in {delta_days} days"

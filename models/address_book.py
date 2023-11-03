@@ -199,59 +199,14 @@ class AddressBook(BaseClass):
 
     def get_birthdays(self, delta_days: int) -> list[Record]:
         ret = []
-        # TODO: This is placefolder. Implement real logic
-        next_date = datetime.today() + timedelta(days=delta_days)
-        print(next_date)
-        today = date.today()
+        required_date = datetime.today().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=10)
         for key in self.data:
             user: Record = self.data[key]
             if user.birthday is None or user.birthday.date is None:
                 continue
-            birthday = user.birthday.date
-            birthday_this_year = birthday.replace(year=today.year)
-            if birthday_this_year < today:
-                birthday_this_year = birthday.replace(year=today.year + 1)
-            delta_days = (birthday_this_year - today).days
-            if delta_days < 7:
+            today = datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
+            contact_date = user.birthday.date.replace(year=datetime.today().year) if user.birthday.date.replace(year=datetime.today().year) > today else user.birthday.date.replace(year=datetime.today().year + 1)
+            delta = (contact_date - today).days
+            if delta == delta_days:
                 ret.append(user)
         return ret
-
-    # def get_birthdays_per_week(self) -> list[str]:
-    #     return_list = []
-    #     today = date.today()
-    #     # Debug
-    #     # today = today.replace(day=today.day + 4)
-    #     # print(today)
-    #     ret = {}
-    #     week_days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    #     for key in self.data:
-    #         user: Record = self.data[key]
-    #         name = user.name.value
-    #         if user.birthday is None or user.birthday.date is None:
-    #             continue
-    #         birthday = user.birthday.date
-    #         birthday_this_year = birthday.replace(year=today.year)
-    #         if birthday_this_year < today:
-    #             birthday_this_year = birthday.replace(year=today.year + 1)
-    #         delta_days = (birthday_this_year - today).days
-    #         if delta_days < 7:
-    #             delta_days = birthday_this_year.weekday()
-    #             if not delta_days in ret:
-    #                 ret[delta_days] = []
-    #             ret[delta_days].append(name)
-    #     buff = []
-    #     for day_index_from_today in range(today.weekday(), today.weekday() + 7):
-    #         index = day_index_from_today % 7
-    #         if index in ret:
-    #             if index == 0:
-    #                 buff.extend(ret[index])
-    #                 if len(buff) > 0:
-    #                     return_list.append(f'{week_days[index]}: {", ".join(buff)}')
-    #                 buff.clear()
-    #             elif index < 5:
-    #                 return_list.append(f'{week_days[index]}: {", ".join(ret[index])}')
-    #             else:
-    #                 buff.extend(ret[index])
-    #     if len(buff) > 0:
-    #         return_list.append(f'{week_days[0]}: {", ".join(buff)}')
-    #     return return_list
