@@ -13,7 +13,7 @@ def parse_input(user_input) -> tuple[str, Optional[str], Optional[list]]:
         input_list = shlex.split(user_input)
     except ValueError:
         return (None, None, None)
-    
+
     if len(input_list) == 0:
         return (None, None, None)
     elif len(input_list) == 1:
@@ -30,6 +30,8 @@ def parse_input(user_input) -> tuple[str, Optional[str], Optional[list]]:
         return (module, cmd, *args)
 
 # TODO: Update help for tags section
+
+
 def get_main_completion(book: AddressBook, notes: Notes) -> Completer:
     return NestedCompleter.from_nested_dict({
         'contacts': {
@@ -37,7 +39,7 @@ def get_main_completion(book: AddressBook, notes: Notes) -> Completer:
             'all': None,
             'edit': SelectUserCompleter(book=book),
             'remove': SelectUserCompleter(book=book),
-            'find': SelectUserCompleter(book=book), # TODO: Update search completer to use several field like Name, Phone, Email and Address
+            'find': None,
             'birthdays': None,
         },
         "notes": {
@@ -55,12 +57,13 @@ def get_main_completion(book: AddressBook, notes: Notes) -> Completer:
             'alpsort_tags': None,
             'alpsort_tags_revert': None,
         },
-        
+
         'help': None,
         'exit': None,
         'close': None,
         'quit': None
     })
+
 
 help_text = """
 This is a simple assistant bot. It can help you to manage your contacts and notes. 
@@ -79,7 +82,7 @@ Commands:
             all - show all contacts
             edit "CONTACT_NAME" - edit contact
             remove "CONTACT_NAME" - remove contact
-            find "CONTACT_NAME" - find contact
+            find - find contact
             birthdays "DAYS" - show contacts birthdays in "DAYS" days
 
         notes

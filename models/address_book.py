@@ -16,7 +16,6 @@ class Field:
 
 
 class Birthday(Field):
-
     def __init__(self, value: Optional[str] = None):
         self.date: datetime = birthday_parse_or_throw(value) if value else None
 
@@ -152,6 +151,25 @@ class AddressBook(BaseClass):
         for key in self.data.keys():
             if key.lower().find(term.lower()) != -1:
                 ret.append(self.data[key])
+        return ret
+
+    def find_by(self, field: str, value: str) -> Optional[list[Record]]:
+        if field == "name":
+            return self.find(value)
+
+        ret = []
+        for _, v in self.data.items():
+            if field == "name" and value == v.name.value:
+                ret.append(v)
+            elif field == "phone" and v.phone is not None and v.phone.value.find(value) != -1:
+                ret.append(v)
+            elif field == "birthday" and v.birthday is not None and str(v.birthday).find(value) != -1:
+                ret.append(v)
+            elif field == "email" and v.email is not None and v.email.find(value) != -1:
+                ret.append(v)
+            elif field == "address" and v.address is not None and v.address.find(value) != -1:
+                ret.append(v)
+
         return ret
 
     def enumerate(self) -> Optional[Record]:

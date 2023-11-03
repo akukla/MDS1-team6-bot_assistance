@@ -54,11 +54,11 @@ def main():
                         print(
                             "Provide valid contact name to remove. Valid format is: contacts remove \"NAME\"")
                 elif command == 'find':
-                    if len(args) == 1 and args[0] is not None:
-                        print(flow_contact_find(book, args[0]))
-                    else:
-                        print(
-                            "Provide valid contact name to remove. Valid format is: contacts remove \"NAME\"")
+                    if len(args) > 0 and args[0] is not None:
+                        invalid_command_action()
+                        continue
+
+                    print(flow_contact_find(book))
                 elif command == 'birthdays':
                     flow_contact_birthdays(book, args=args)
                 else:
