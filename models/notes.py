@@ -19,6 +19,16 @@ class Notes(BaseClass):
         self._cached_tags: Optional[list[str]] = None
         self.id_counter = 0
 
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        # Don't pickle _cached_tags
+        del state["_cached_tags"]
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self._cached_tags = None
+
     def add(self, title: str, text: Optional[str]) -> Optional[Note]:
         note = Note(
             title=title,
@@ -67,32 +77,33 @@ class Notes(BaseClass):
     def collect_tags(self) -> list[str]: # Тимчасова база
         if self._cached_tags is not None:
             return self._cached_tags
-        tempo_tags = {}
+        temp_tags = []
         for note in self.values():
             words = note.text.split()
             for word in words:
                 if word.startswith('#'):
-                    tempo_tags[word] = tempo_tags.get(word, 0) + 1
-        return tempo_tags.keys()
+                    temp_tags.append(word[1:])
+        return temp_tags
         
     def all_tags(self): # Від найчастішого до найменьш вживанного
         tempo_tags = self.collect_tags()
-        sorted_tags = sorted(tempo_tags.items(), key=lambda x: x[1], reverse=True)
+        print(tempo_tags)
+        sorted_tags = sorted(tempo_tags, reverse=True)
         return sorted_tags   
     
     def all_tags_revert(self): # Від найменьш вживанного до найчастішого
         tempo_tags = self.collect_tags()
-        sorted_tags = sorted(tempo_tags.items(), key=lambda x: x[1], reverse=False)
+        sorted_tags = sorted(tempo_tags, reverse=False)
         return sorted_tags
     
     def alpsort_tags(self): # Сортування за алфавітом: спершу числа, потім літери
         tempo_tags = self.collect_tags()
-        sorted_tags = sorted(tempo_tags.items(), key=lambda x: (x[0].isnumeric(), x[0].lower()))
+        sorted_tags = sorted(tempo_tags, key=lambda x: (x.isnumeric(), x.lower()))
         return sorted_tags
     
     def alpsort_tags_revert(self): # Сортування за алфавітом: спершу останні літери, в конці цифри
         tempo_tags = self.collect_tags()
-        sorted_tags = sorted(tempo_tags.items(), key=lambda x: (x[0].isnumeric(), x[0].lower()), reverse=True)
+        sorted_tags = sorted(tempo_tags, key=lambda x: (x.isnumeric(), x.lower()), reverse=True)
         return sorted_tags
     
     def find_tag(self, query): # Пошук записів по тегах у тексті
