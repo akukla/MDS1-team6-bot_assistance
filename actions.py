@@ -34,12 +34,21 @@ def get_contact(args, book: AddressBook):
 
 
 def get_all_contacts(book: AddressBook):
-    # TODO: Format output 
+    
+    ret = []
+    headers = ["Name", "Phone", "Birthday", "Email", "Address"]
+    separator = "+" + "+".join(["-" * 26 for _ in headers]) + "+"
+
+    ret.append("|" + "|".join([f"{header:^26}" for header in headers]) + "|")
+    ret.append(separator)
+
+    
     if len(book) == 0:
         return 'Address book is empty'
-    ret = []
+ 
     for item in book.enumerate():
-        ret.append(str(item))
+        ret.append(f"| {str(item.name):^24} | {str(item.phone):^24} | {str(item.birthday):^24} | {str(item.email):^24} | {str(item.address):^24} |")
+        ret.append(separator)
     return '\n'.join(ret)
 
 
