@@ -151,7 +151,7 @@ def flow_contact_edit(book: AddressBook, args: list[str]) -> str:
         if len(value_for_editing) == 0:
             record.address = None
             return 'Delete address'
-        record.address = value_for_editing
+        record.add_address(value_for_editing)
         return "Address was changed"
 
     # It is impossible to reach this line if validators work fine
@@ -235,12 +235,12 @@ def flow_contact_find(book: AddressBook) -> str:
             row_data.append("")
 
         if record.email:
-            row_data.append(record.email)
+            row_data.append(record.email.value)
         else:
             row_data.append("")
 
         if record.address:
-            row_data.append(record.address)
+            row_data.append(record.address.value)
         else:
             row_data.append("")
 
