@@ -29,8 +29,6 @@ def parse_input(user_input) -> tuple[str, Optional[str], Optional[list]]:
         module = module.strip().lower()
         return (module, cmd, *args)
 
-# TODO: Update help for tags section
-
 
 def get_main_completion(book: AddressBook, notes: Notes) -> Completer:
     return NestedCompleter.from_nested_dict({
