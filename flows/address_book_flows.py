@@ -193,21 +193,24 @@ def flow_contact_find(book: AddressBook) -> str:
     available_fields = ["name", "phone", "email", "address", "birthday"]
     field_completion = WordCompleter(available_fields, ignore_case=True)
 
-    field = prompt(
-        HTML(
-            f"What field for search would you like to use? <highlighted-text>{str(available_fields)}</highlighted-text> or <highlighted-text>Leave Empty</highlighted-text> to cancel search: "),
-        style=style,
-        completer=field_completion,
-        validator=SimpleListValidator(available_fields, allow_empty=True)
-    ).strip()
-    if len(field.strip()) == 0:
-        return 'Canceled'
+    while True:
+        field = prompt(
+            HTML(
+                f"What field for search would you like to use? <highlighted-text>{str(available_fields)}</highlighted-text> or <highlighted-text>Leave Empty</highlighted-text> to cancel search: "),
+            style=style,
+            completer=field_completion,
+            validator=SimpleListValidator(available_fields, allow_empty=True)
+        ).strip()
 
-    field_value = prompt(HTML(
-        GIVE_ME_TEMPLATE_EMPTY_FOR_CANCEL.format(entity="Field value")
-    ), style=style, validator=None)
-    if len(field_value.strip()) == 0:
-        return 'Canceled'
+        if len(field.strip()) == 0:
+            return 'Canceled'
+
+        field_value = prompt(HTML(
+            GIVE_ME_TEMPLATE_EMPTY_FOR_CANCEL.format(entity="Field value")
+        ), style=style, validator=None)
+
+        if len(field_value.strip()) != 0:
+            break
 
     columns_width = [30, 12, 30, 40, 10]
     row_delimiter = "| " + " | ".join(
@@ -256,6 +259,7 @@ def flow_contact_find(book: AddressBook) -> str:
 
     return table
 
+
 def flow_contact_birthdays(book: AddressBook, args: list[str]) -> str:
     delta_days = 0
     if len(args) > 0 and args[0] is not None:
@@ -265,15 +269,16 @@ def flow_contact_birthdays(book: AddressBook, args: list[str]) -> str:
         except ValidationError:
             pass
             # return DateDeltaValidator.message
-    
+
     if delta_days == 0:
         while True:
             str_value = prompt(
-                        HTML(f"How many <highlighted-text>days</highlighted-text> should i add from today to shouw birthdays? [<highlighted-text>Empty</highlighted-text> to <highlighted-text>Cancel</highlighted-text>]: "),
-                        style=style,
-                        validator=DateDeltaValidator()
-                    ).strip()
-                    
+                HTML(
+                    f"How many <highlighted-text>days</highlighted-text> should i add from today to shouw birthdays? [<highlighted-text>Empty</highlighted-text> to <highlighted-text>Cancel</highlighted-text>]: "),
+                style=style,
+                validator=DateDeltaValidator()
+            ).strip()
+
             if len(str_value) == 0:
                 return 'Canceled'
             else:
@@ -282,7 +287,8 @@ def flow_contact_birthdays(book: AddressBook, args: list[str]) -> str:
                     delta_days = int(str_value)
                     break
                 except ValidationError:
-                    print("Provide valid days count. Valid command format is: contacts birthdays DAYS")
-    
+                    print(
+                        "Provide valid days count. Valid command format is: contacts birthdays DAYS")
+
     records = book.get_birthdays(delta_days)
     return "\n-----\n".join([str(record) for record in records])

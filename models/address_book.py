@@ -164,13 +164,13 @@ class AddressBook(BaseClass):
         for _, v in self.data.items():
             if field == "name" and value == v.name.value:
                 ret.append(v)
-            elif field == "phone" and v.phone is not None and value == v.phone.value:
+            elif field == "phone" and v.phone is not None and v.phone.value.find(value) != -1:
                 ret.append(v)
-            elif field == "birthday" and v.birthday is not None and value == str(v.birthday):
+            elif field == "birthday" and v.birthday is not None and str(v.birthday).find(value) != -1:
                 ret.append(v)
-            elif field == "email" and v.email is not None and value == v.email:
+            elif field == "email" and v.email is not None and v.email.find(value) != -1:
                 ret.append(v)
-            elif field == "address" and v.address is not None and value == v.address:
+            elif field == "address" and v.address is not None and v.address.find(value) != -1:
                 ret.append(v)
 
         return ret
@@ -215,7 +215,7 @@ class AddressBook(BaseClass):
             if delta_days < 7:
                 ret.append(user)
         return ret
-    
+
     # def get_birthdays_per_week(self) -> list[str]:
     #     return_list = []
     #     today = date.today()
