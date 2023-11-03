@@ -2,6 +2,7 @@
 from typing import Optional
 from models.base_class import BaseClass
 
+
 class Note:
     def __init__(self, title, text):
         self.id = 0
@@ -10,6 +11,7 @@ class Note:
 
     def __repr__(self):
         return f"title: {self.title}\n\n{self.text}"
+
 
 class Notes(BaseClass):
     _filename = 'notes.pcl'
@@ -47,13 +49,13 @@ class Notes(BaseClass):
         for note in sorted(found_notes, key=lambda x: x.id):
             ret.append(note)
         return ret
-    
+
     def find_full_match(self, keyword):
         found_notes = [note for note in self.values() if keyword == note.title]
         for note in sorted(found_notes, key=lambda x: x.id):
             if note is not None:
                 return note
-            
+
     def all_notes(self):
         ret = []
         for note in sorted(self.values(), key=lambda x: x.id):
@@ -65,9 +67,9 @@ class Notes(BaseClass):
         if self.data.pop(note.title) != None:
             self.save()
             return True
-        else: 
+        else:
             return False
-        
+
     def update_tags(self):
         self._cached_tags = None
 
@@ -80,7 +82,7 @@ class Notes(BaseClass):
 
 # Tags
 
-    def collect_tags(self) -> list[str]: # Тимчасова база
+    def collect_tags(self) -> list[str]:  # Тимчасова база
         if self._cached_tags is not None:
             return self._cached_tags
         temp_tags = []
@@ -90,36 +92,39 @@ class Notes(BaseClass):
                 if word.startswith('#'):
                     temp_tags.append(word[1:])
         return temp_tags
-        
-    def all_tags(self): # Від найчастішого до найменьш вживанного
+
+    def all_tags(self):  # Від найчастішого до найменьш вживанного
         tempo_tags = self.collect_tags()
         print(tempo_tags)
         sorted_tags = sorted(tempo_tags, reverse=True)
-        return sorted_tags   
-    
-    def all_tags_revert(self): # Від найменьш вживанного до найчастішого
+        return sorted_tags
+
+    def all_tags_revert(self):  # Від найменьш вживанного до найчастішого
         tempo_tags = self.collect_tags()
         sorted_tags = sorted(tempo_tags, reverse=False)
         return sorted_tags
-    
-    def alpsort_tags(self): # Сортування за алфавітом: спершу числа, потім літери
+
+    def alpsort_tags(self):  # Сортування за алфавітом: спершу числа, потім літери
         tempo_tags = self.collect_tags()
-        sorted_tags = sorted(tempo_tags, key=lambda x: (x.isnumeric(), x.lower()))
+        sorted_tags = sorted(
+            tempo_tags, key=lambda x: (x.isnumeric(), x.lower()))
         return sorted_tags
-    
-    def alpsort_tags_revert(self): # Сортування за алфавітом: спершу останні літери, в конці цифри
+
+    # Сортування за алфавітом: спершу останні літери, в конці цифри
+    def alpsort_tags_revert(self):
         tempo_tags = self.collect_tags()
-        sorted_tags = sorted(tempo_tags, key=lambda x: (x.isnumeric(), x.lower()), reverse=True)
+        sorted_tags = sorted(tempo_tags, key=lambda x: (
+            x.isnumeric(), x.lower()), reverse=True)
         return sorted_tags
-    
-    def find_tag(self, query): # Пошук записів по тегах у тексті
+
+    def find_tag(self, query):  # Пошук записів по тегах у тексті
         if query.startswith("#"):
             query = query[1:]
 
         if len(query) > 127:
             print("The query is too long!")
             return
-            
+
         matching_tags = {}
 
         for note in self.values():
@@ -132,13 +137,13 @@ class Notes(BaseClass):
                             matching_tags[cleaned_word] = []
                         matching_tags[cleaned_word].append(note.title)
 
-        sorted_tags = sorted(matching_tags.keys(), key=lambda k: (len(k) - len(query), k))
+        sorted_tags = sorted(matching_tags.keys(),
+                             key=lambda k: (len(k) - len(query), k))
 
-        results = []
+        results = {}
         for tag in sorted_tags:
-            results.append(f"Tag: #{tag}")
+            results[tag] = []
             for title in matching_tags[tag]:
-                results.append(f" - {title}")
+                results[tag].append(title)
 
         return results
-    

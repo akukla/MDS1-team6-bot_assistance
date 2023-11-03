@@ -32,6 +32,7 @@ def flow_note_add(notes: Notes) -> str:
     return "Note added" if notes.add(title=title_value, text=text_value) != None else "Note was not added"
 
 
+
 def flow_note_find(notes: Notes, term: str) -> str:
     delimeter_str = "\n" + "*" * 80 + "\n"
     notes_str = delimeter_str
@@ -122,28 +123,42 @@ def flow_tags_find_tag(notes: Notes, args: list[Optional[str]]) -> str:
         query = prompt("Give me Tag Name: ", style=style, completer=WordCompleter(
             notes.collect_tags(), ignore_case=True,))
 
-    # TODO: Format output. ATTENTION, it has strange output from find_tag method
-    return str(notes.find_tag(query))
+    delimeter_str = "\n" + "*" * 80 + "\n"
+    result_str = delimeter_str
+
+    filtered_notes = notes.find_tag(query)
+
+    if len(filtered_notes) == 0:
+        return "No notes found."
+
+    for tag, titles in filtered_notes.items():
+        result_str += "\n" + f"{'Tag: ':<10}" + tag + "\n"
+        result_str += f"{'Titles: ':<10}"
+        result_str += ', '.join([title for title in titles]) + "\n"
+        result_str += delimeter_str
+
+    return result_str
+
 
 
 def flow_tags_all_tags(notes: Notes) -> str:
-    # TODO: Format output
-    return str(notes.all_tags())
+    return ', '.join(["#" + str(tag) for tag in notes.all_tags()])
+    
 
 
 def flow_tags_all_tags_revert(notes: Notes) -> str:
-    # TODO: Format output
-    return str(notes.all_tags_revert())
+    return ', '.join(["#" + str(tag) for tag in notes.all_tags_revert()])
+
 
 
 def flow_tags_alpsort_tags(notes: Notes) -> str:
-    # TODO: Format output
-    return str(notes.alpsort_tags())
+    return ', '.join(["#" + str(tag) for tag in notes.alpsort_tags()])
+
 
 
 def flow_tags_alpsort_tags_revert(notes: Notes) -> str:
-    # TODO: Format output
-    return str(notes.all_tags_revert())
+    return ', '.join(["#" + str(tag) for tag in notes.all_tags_revert()])
+
 
 
 def flow_notes_find_by_tag(notes, tag: Optional[str]) -> str:
@@ -153,7 +168,18 @@ def flow_notes_find_by_tag(notes, tag: Optional[str]) -> str:
     if tag is None:
         return 'Canceled'
 
-    result = notes.find_notes_by_tag(tag)
+    filtered_notes = notes.find_notes_by_tag(tag)
 
-    # TODO: Format output if result is not empty
-    return result if len(result) > 0 else 'No notes found'
+    if len(filtered_notes) == 0:
+        return "No notes found."
+
+    delimeter_str = "\n" + "*" * 80 + "\n"
+    notes_str = delimeter_str
+
+    for note in filtered_notes:
+        notes_str += "\n" + note.title + "\n"
+        notes_str += "-" * len(note.title) + "\n\n"
+        notes_str += note.text if note.text else ""
+        notes_str += delimeter_str
+
+    return notes_str
