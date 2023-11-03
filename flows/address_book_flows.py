@@ -226,7 +226,12 @@ def flow_contact_find(book: AddressBook) -> str:
     table += row_delimiter
     table += "\n"
 
-    for record in book.find_by(field, field_value):
+    records = book.find_by(field, field_value)
+
+    if len(records) == 0:
+        return "No contacts found."
+
+    for record in records:
         row_data = [record.name.value]
 
         if record.phone:
