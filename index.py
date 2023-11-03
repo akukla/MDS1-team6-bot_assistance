@@ -23,10 +23,13 @@ def main():
         print("Welcome to the assistant bot!")
         while True:
 
-            user_input = session.prompt('Enter a command: ', completer=completer)
+            user_input = session.prompt(
+                'Enter a command: ', completer=completer)
             module, command, *args = parse_input(user_input)
 
             if command in ["close", "exit", "quit"]:
+                book.save()
+                notes.save()
                 print("Good bye!")
                 break
             elif command == "hello":
@@ -48,12 +51,14 @@ def main():
                         record = book.find_full_match(args[0])
                         print(flow_contact_remove(book, record))
                     else:
-                        print("Provide valid contact name to remove. Valid format is: contacts remove \"NAME\"")
+                        print(
+                            "Provide valid contact name to remove. Valid format is: contacts remove \"NAME\"")
                 elif command == 'find':
                     if len(args) == 1 and args[0] is not None:
                         print(flow_contact_find(book, args[0]))
                     else:
-                        print("Provide valid contact name to remove. Valid format is: contacts remove \"NAME\"")
+                        print(
+                            "Provide valid contact name to remove. Valid format is: contacts remove \"NAME\"")
                 elif command == 'birthdays':
                     flow_contact_birthdays(book, args=args)
                 else:
@@ -67,19 +72,22 @@ def main():
                     if len(args) > 0 and args[0] is not None:
                         print(flow_note_find(notes, args[0]))
                     else:
-                        print("Provide valid note title. Valid command format is: notes find \"NAME\"")
+                        print(
+                            "Provide valid note title. Valid command format is: notes find \"NAME\"")
                 elif command == 'remove':
                     if len(args) == 1 and args[0] is not None and notes.find_full_match(args[0]) is not None:
                         note = notes.find_full_match(args[0])
                         print(flow_note_remove(notes, note))
                     else:
-                        print("Provide valid note title. Valid command format is: notes remove \"NAME\"")
+                        print(
+                            "Provide valid note title. Valid command format is: notes remove \"NAME\"")
                 elif command == 'edit':
                     if len(args) == 1 and args[0] is not None and notes.find_full_match(args[0]) is not None:
                         note = notes.find_full_match(args[0])
                         print(flow_note_edit(notes, note))
                     else:
-                        print("Provide valid note title. Valid command format is: notes edit \"NAME\"")
+                        print(
+                            "Provide valid note title. Valid command format is: notes edit \"NAME\"")
                 else:
                     invalid_command_action()
 
