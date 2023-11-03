@@ -21,7 +21,7 @@ class BaseClass(UserDict):
         return self
          
     def __exit__(self, exc_type, exc_value, exc_traceback):
-        self.save()
+        pass
 
     @classmethod
     def load_or_create(cls, filename = None) -> Type:
