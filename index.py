@@ -28,8 +28,6 @@ def main():
             module, command, *args = parse_input(user_input)
 
             if command in ["close", "exit", "quit"]:
-                book.save()
-                notes.save()
                 print("Good bye!")
                 break
             elif command == "hello":
