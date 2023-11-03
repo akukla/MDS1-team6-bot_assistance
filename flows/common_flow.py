@@ -29,8 +29,6 @@ def parse_input(user_input) -> tuple[str, Optional[str], Optional[list]]:
         module = module.strip().lower()
         return (module, cmd, *args)
 
-# TODO: Update help for tags section
-
 
 def get_main_completion(book: AddressBook, notes: Notes) -> Completer:
     return NestedCompleter.from_nested_dict({
@@ -96,10 +94,10 @@ Commands:
 
         tags
             find_tag - find tag and show all note title with this tag
-            all_tags -
-            all_tags_revert -
-            alpsort_tags - 
-            alpsort_tags_revert - 
+            all_tags - show all tags by usage
+            all_tags_revert - show all tags by usage in reverse order
+            alpsort_tags - show all tags alphabetically
+            alpsort_tags_revert - show all tags alphabetically in reverse order
         
         help - show this help
         exit or close or quit - close application
