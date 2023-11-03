@@ -87,7 +87,7 @@ def flow_note_all(notes: Notes) -> str:
     return '\n-----\n'.join([str(note) for note in notes.all_notes()])
 
 
-def flow_tags_find_by_tag(notes: Notes, args: list[Optional[str]]) -> str:
+def flow_tags_find_tag(notes: Notes, args: list[Optional[str]]) -> str:
     query: Optional[str] = args[0] if len(args) > 0 else None
 
     if query == None:
@@ -111,3 +111,15 @@ def flow_tags_alpsort_tags(notes: Notes) -> str:
 def flow_tags_alpsort_tags_revert(notes: Notes) -> str:
      # TODO: Format output
     return str(notes.all_tags_revert())
+
+def flow_notes_find_by_tag(notes, tag: Optional[str]) -> str:
+    if tag is None:
+        tag = prompt("Give me Tag Name [Empty for Cancel]: ", style=style, completer=WordCompleter(notes.collect_tags(), ignore_case=True,))
+    
+    if tag is None:
+        return 'Canceled'
+
+    result = notes.find_notes_by_tag(tag)
+
+    # TODO: Format output if result is not empty
+    return result if len(result) > 0 else 'No notes found'

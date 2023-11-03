@@ -71,6 +71,12 @@ class Notes(BaseClass):
     def update_tags(self):
         self._cached_tags = None
 
+    def find_notes_by_tag(self, tag) -> list[Note]:
+        ret = []
+        for note in self.values():
+            if note.text is not None and tag in note.text:
+                ret.append(note)
+        return ret
 
 # Tags
 

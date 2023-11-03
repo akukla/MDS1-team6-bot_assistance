@@ -86,12 +86,15 @@ def main():
                     else:
                         print(
                             "Provide valid note title. Valid command format is: notes edit \"NAME\"")
+                elif command == 'find_by_tag':
+                    tag = args[0] if len(args) > 0 and args[0] is not None else None
+                    print(flow_notes_find_by_tag(notes, tag))
                 else:
                     invalid_command_action()
 
             elif module == 'tags':
-                if command == 'find_by_tag':
-                    print(flow_tags_find_by_tag(notes, args))
+                if command == 'find_tag':
+                    print(flow_tags_find_tag(notes, args))
                 elif command == 'all_tags':
                     print(flow_tags_all_tags(notes))
                 elif command == 'all_tags_revert':
