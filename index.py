@@ -1,9 +1,8 @@
-from flows.address_book_flows import flow_contact_add, flow_contact_birthdays, flow_contact_edit, flow_contact_find, flow_contact_remove
+from flows.address_book_flows import flow_contact_add, flow_contact_birthdays, flow_contact_edit, flow_contact_find, flow_contact_remove, flow_get_all_contacts
 from flows.notes_flows import *
 from flows.common_flow import get_main_completion, parse_input, help_text
 from models.address_book import AddressBook
 from models.notes import Notes
-from actions import *
 from prompt_toolkit import prompt
 
 from flows.validators import *
@@ -38,7 +37,7 @@ def main():
                 if command == 'add':
                     print(flow_contact_add(book))
                 elif command == "all":
-                    print(get_all_contacts(book))
+                    print(flow_get_all_contacts(book))
                 elif command == 'edit':
                     if len(args) > 0 and args[0] is not None and book.find_full_match(args[0]) is not None:
                         print(flow_contact_edit(book, args))

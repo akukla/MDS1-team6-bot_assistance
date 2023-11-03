@@ -8,9 +8,7 @@ from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.formatted_text import HTML
 
-from models.address_book import AddressBook
-
-from actions import *
+from models.address_book import AddressBook, Record
 
 from flows.styles import style
 from flows.validators import *
@@ -20,6 +18,32 @@ from flows.completion import SelectUserCompleter
 GIVE_ME_TEMPLATE_EMPTY_FOR_CANCEL = "Give me <highlighted-text>{entity}</highlighted-text> [<highlighted-text>Empty</highlighted-text> for <highlighted-text>Cancel</highlighted-text>]: "
 GIVE_ME_TEMPLATE_EMPTY_FOR_SKIP = "Give me <highlighted-text>{entity}</highlighted-text> [<highlighted-text>Empty</highlighted-text> for <highlighted-text>Skip</highlighted-text>]: "
 DELETE_CONFIRMATION_CONTACT = "Are you sure? Contact <highlighted-text>{entity}</highlighted-text> will be <highlighted-text>Deleted</highlighted-text> [<highlighted-text>y</highlighted-text>/<highlighted-text>n</highlighted-text>, default: <highlighted-text>n</highlighted-text>]: "
+
+
+def flow_get_all_contacts(book: AddressBook):
+    """
+    Returns all contact from address book.
+
+    Args:
+        book (AddressBook): The address book to add the contact to.
+
+    Returns:
+        str: Contact list.
+    """
+    ret = []
+    headers = ["Name", "Phone", "Birthday", "Email", "Address"]
+    separator = "+" + "+".join(["-" * 26 for _ in headers]) + "+"
+
+    ret.append("|" + "|".join([f"{header:^26}" for header in headers]) + "|")
+    ret.append(separator)
+    
+    if len(book) == 0:
+        return 'Address book is empty'
+ 
+    for item in book.enumerate():
+        ret.append(f"| {str(item.name):^24} | {str(item.phone):^24} | {str(item.birthday):^24} | {str(item.email):^24} | {str(item.address):^24} |")
+        ret.append(separator)
+    return '\n'.join(ret)
 
 
 def flow_contact_add(book: AddressBook) -> str:

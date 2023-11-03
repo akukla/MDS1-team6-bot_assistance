@@ -7,8 +7,6 @@ style = Style.from_dict(
         # "": "#ff0066",
         # Prompt.
         "highlighted-text": "#006400 bold",
-        # Make a selection reverse/underlined.
-        # (Use Control-Space to select.)
         "selected-text": "reverse underline",
     }
 )
