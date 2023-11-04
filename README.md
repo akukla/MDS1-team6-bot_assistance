@@ -15,7 +15,7 @@ pip3 install -r requirements.txt
 ## Run bot
 
 ```
-python index.py
+python main.py
 This is a simple assistant bot designed to help you manage your contacts and notes.
 
 Autocompletion is available for all commands. To use autocomplete, simply press the arrow keys to navigate through the suggestions and hit space to confirm your selection.
