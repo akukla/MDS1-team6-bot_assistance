@@ -71,7 +71,7 @@ Autocoplete is available for all commands. To use autocomplete just press arrow 
 
 Commands examples:
     contacts all - show all contacts
-    contacts edit "Jhon Doe" - add new contact
+    contacts edit "John Doe" - add new contact
     notes all - show all notes
     notes remove "Note Title" - remove note by title
 
