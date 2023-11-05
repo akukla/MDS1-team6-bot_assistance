@@ -338,7 +338,7 @@ def flow_contact_birthdays(book: AddressBook, args: list[str]) -> str:
     table += "\n"
 
     table += "| " + " | ".join(
-        f"{t[0]:^{t[1]}}" for t in zip(columns, columns_width)) + " |"
+        f"{t[0].capitalize():^{t[1]}}" for t in zip(columns, columns_width)) + " |"
     table += "\n"
 
     table += row_delimiter
