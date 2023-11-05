@@ -190,7 +190,18 @@ class AddressBook(BaseClass):
 
         for user in demo_users:
             record = Record(user['name'])
-            record._add_birthday_datetime(user['birthday'])
+            phone = user.get("phone")
+            if phone is not None:
+                record.add_phone(phone)
+            email = user.get("email")
+            if email is not None:
+                record.add_email(email)
+            address = user.get("address")
+            if address is not None:
+                record.add_address(address)
+            birthday = user.get("birthday")
+            if birthday is not None:
+                record._add_birthday_datetime(user['birthday'])
             self.add_record(record)
 
     def get_birthdays(self, delta_days: int) -> list[Record]:

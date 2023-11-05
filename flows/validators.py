@@ -202,7 +202,7 @@ class DateValidator(Validator):
 class DateDeltaValidator(Validator):
     """Validator to check the format of a date in DD.MM.YYYY format."""
 
-    message = 'Invalid DAYS parameter. DAYS should be integer and gretter than 0'
+    message = 'Invalid DAYS parameter. DAYS should be integer and greater than 0'
 
     @staticmethod
     def validate_text(text):
