@@ -34,7 +34,8 @@ def flow_get_all_contacts(book: AddressBook):
     headers = ["Name", "Phone", "Birthday", "Email", "Address"]
     separator = "+" + "+".join(["-" * 26 for _ in headers]) + "+"
 
-    ret.append("|" + "|".join([f"{header:^26}" for header in headers]) + "|")
+    ret.append(separator)
+    ret.append("| " + " | ".join([f"{header:^24}" for header in headers]) + " |")
     ret.append(separator)
     
     if len(book) == 0:
@@ -214,7 +215,7 @@ def flow_contact_find(book: AddressBook) -> str:
     Returns:
         str: A formatted table displaying the search results.
     """
-    available_fields = ["name", "phone", "email", "address", "birthday"]
+    available_fields = ["name", "phone", "birthday", "email", "address"]
     field_completion = WordCompleter(available_fields, ignore_case=True)
 
     while True:
@@ -236,15 +237,15 @@ def flow_contact_find(book: AddressBook) -> str:
         if len(field_value.strip()) != 0:
             break
 
-    columns_width = [30, 12, 30, 40, 10]
-    row_delimiter = "| " + " | ".join(
-        f"{'-' * t:^{t}}" for t in columns_width) + " |"
+    columns_width = [24, 24, 24, 24, 24]
+    row_delimiter = "+ " + " + ".join(
+        f"{'-' * t:^{t}}" for t in columns_width) + " +"
 
     table = row_delimiter
     table += "\n"
 
     table += "| " + " | ".join(
-        f"{t[0]:^{t[1]}}" for t in zip(available_fields, columns_width)) + " |"
+        f"{t[0].capitalize():^{t[1]}}" for t in zip(available_fields, columns_width)) + " |"
     table += "\n"
 
     table += row_delimiter
@@ -263,6 +264,11 @@ def flow_contact_find(book: AddressBook) -> str:
         else:
             row_data.append("")
 
+        if record.birthday:
+            row_data.append(str(record.birthday))
+        else:
+            row_data.append("")
+
         if record.email:
             row_data.append(record.email.value)
         else:
@@ -270,11 +276,6 @@ def flow_contact_find(book: AddressBook) -> str:
 
         if record.address:
             row_data.append(record.address.value)
-        else:
-            row_data.append("")
-
-        if record.birthday:
-            row_data.append(str(record.birthday))
         else:
             row_data.append("")
 
@@ -320,6 +321,38 @@ def flow_contact_birthdays(book: AddressBook, args: list[str]) -> str:
                         "Provide valid days count. Valid command format is: contacts birthdays DAYS")
 
     records = book.get_birthdays(delta_days)
-     # Format and return the output: if there are contacts with matching birthdays, join their string representations with a separator; otherwise, return a message indicating no birthdays were found in the specified range.
-    return "\n-----\n".join([str(record) for record in records]) if len(records) > 0 else f"You don't have any birthdays in {delta_days} days"
+    if len(records) == 0:
+        return f"You don't have any birthdays in {delta_days} days"
 
+    columns = ["name", "birthday"]
+    columns_width = [24, 24]
+    row_delimiter = "+ " + " + ".join(
+        f"{'-' * t:^{t}}" for t in columns_width) + " +"
+
+    table = row_delimiter
+    table += "\n"
+
+    table += "| " + " | ".join(
+        f"{t[0]:^{t[1]}}" for t in zip(columns, columns_width)) + " |"
+    table += "\n"
+
+    table += row_delimiter
+    table += "\n"
+
+    for record in records:
+        row_data = [record.name.value]
+
+        if record.birthday:
+            row_data.append(str(record.birthday))
+        else:
+            row_data.append("")
+
+        table_row = "| " + " | ".join(
+            f"{t[0]:^{t[1]}}" for t in zip(row_data, columns_width)) + " |"
+        table += table_row
+        table += "\n"
+
+        table += row_delimiter
+        table += "\n"
+
+    return table
