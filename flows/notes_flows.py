@@ -14,7 +14,7 @@ from models.notes import Notes, Note
 
 GIVE_ME_TEMPLATE_EMPTY_FOR_CANCEL = "Give me <highlighted-text>{entity}</highlighted-text> [<highlighted-text>Empty</highlighted-text> for <highlighted-text>Cancel</highlighted-text>]: "
 GIVE_ME_TEMPLATE_EMPTY_FOR_SKIP = "Give me <highlighted-text>{entity}</highlighted-text> [<highlighted-text>Empty</highlighted-text> for <highlighted-text>Skip</highlighted-text>]: "
-DELETE_CONFIRMATION_NOTE = "Are you sure. Note will be <highlighted-text>Deleted</highlighted-text> [<highlighted-text>y</highlighted-text>/<highlighted-text>n</highlighted-text>, dafault:<highlighted-text>n</highlighted-text>]: "
+DELETE_CONFIRMATION_NOTE = "Are you sure. Note will be <highlighted-text>Deleted</highlighted-text> [<highlighted-text>y</highlighted-text>/<highlighted-text>n</highlighted-text>, default:<highlighted-text>n</highlighted-text>]: "
 
 
 def flow_note_add(notes: Notes) -> str:
@@ -32,8 +32,8 @@ def flow_note_add(notes: Notes) -> str:
 
 
 def flow_note_find(notes: Notes, term: str) -> str:
-    delimeter_str = "\n" + "*" * 80 + "\n"
-    notes_str = delimeter_str
+    delimiter_str = "\n" + "*" * 80 + "\n"
+    notes_str = delimiter_str
 
     filtered_notes = notes.find_notes(term)
 
@@ -44,7 +44,7 @@ def flow_note_find(notes: Notes, term: str) -> str:
         notes_str += "\n" + note.title + "\n"
         notes_str += "-" * len(note.title) + "\n\n"
         notes_str += note.text if note.text else ""
-        notes_str += delimeter_str
+        notes_str += delimiter_str
 
     return notes_str
 
@@ -64,7 +64,7 @@ def flow_note_remove(notes: Notes, note: Note) -> str:
 
 
 def flow_note_edit(notes: Notes, note: Note) -> str:
-    template = "Would you like to edit Note {field}? [<highlighted-text>y</highlighted-text>/<highlighted-text>n</highlighted-text>, dafault:<highlighted-text>n</highlighted-text>]: "
+    template = "Would you like to edit Note {field}? [<highlighted-text>y</highlighted-text>/<highlighted-text>n</highlighted-text>, default:<highlighted-text>n</highlighted-text>]: "
     res = False
 
     # Title update
@@ -97,8 +97,8 @@ def flow_note_edit(notes: Notes, note: Note) -> str:
 
 
 def flow_note_all(notes: Notes) -> str:
-    delimeter_str = "\n" + "*" * 80 + "\n"
-    notes_str = delimeter_str
+    delimiter_str = "\n" + "*" * 80 + "\n"
+    notes_str = delimiter_str
 
     notes_to_print = notes.all_notes()
 
@@ -109,7 +109,7 @@ def flow_note_all(notes: Notes) -> str:
         notes_str += "\n" + note.title + "\n"
         notes_str += "-" * len(note.title) + "\n\n"
         notes_str += note.text if note.text else ""
-        notes_str += delimeter_str
+        notes_str += delimiter_str
 
     return notes_str
 
@@ -121,8 +121,8 @@ def flow_tags_find_tag(notes: Notes, args: list[Optional[str]]) -> str:
         query = prompt("Give me Tag Name: ", style=style, completer=WordCompleter(
             notes.collect_tags(), ignore_case=True,))
 
-    delimeter_str = "\n" + "*" * 80 + "\n"
-    result_str = delimeter_str
+    delimiter_str = "\n" + "*" * 80 + "\n"
+    result_str = delimiter_str
 
     filtered_notes = notes.find_tag(query)
 
@@ -133,7 +133,7 @@ def flow_tags_find_tag(notes: Notes, args: list[Optional[str]]) -> str:
         result_str += "\n" + f"{'Tag: ':<10}" + tag + "\n"
         result_str += f"{'Titles: ':<10}"
         result_str += ', '.join([title for title in titles]) + "\n"
-        result_str += delimeter_str
+        result_str += delimiter_str
 
     return result_str
 
@@ -166,13 +166,13 @@ def flow_notes_find_by_tag(notes, tag: Optional[str]) -> str:
     if len(filtered_notes) == 0:
         return "No notes found."
 
-    delimeter_str = "\n" + "*" * 80 + "\n"
-    notes_str = delimeter_str
+    delimiter_str = "\n" + "*" * 80 + "\n"
+    notes_str = delimiter_str
 
     for note in filtered_notes:
         notes_str += "\n" + note.title + "\n"
         notes_str += "-" * len(note.title) + "\n\n"
         notes_str += note.text if note.text else ""
-        notes_str += delimeter_str
+        notes_str += delimiter_str
 
     return notes_str

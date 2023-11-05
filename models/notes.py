@@ -91,12 +91,12 @@ class Notes(BaseClass):
                     temp_tags.append(word[1:])
         return temp_tags
 
-    def all_tags(self):  # Від найчастішого до найменьш вживанного
+    def all_tags(self):  # Від найчастішого до найменш вживанного
         tempo_tags = self.collect_tags()
         sorted_tags = sorted(tempo_tags, reverse=True)
         return sorted_tags
 
-    def all_tags_revert(self):  # Від найменьш вживанного до найчастішого
+    def all_tags_revert(self):  # Від найменш вживанного до найчастішого
         tempo_tags = self.collect_tags()
         sorted_tags = sorted(tempo_tags, reverse=False)
         return sorted_tags
