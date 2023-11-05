@@ -43,10 +43,10 @@ def flow_get_all_contacts(book: AddressBook):
  
     for item in book.enumerate():
         name = str(item.name)
-        phone = str(item.phone) if item.phone else ""
-        birthday = str(item.birthday) if item.birthday else ""
-        email = str(item.email) if item.email else ""
-        address = str(item.address) if item.address else ""
+        phone = str(item.phone) if item.phone else "N/A"
+        birthday = str(item.birthday) if item.birthday else "N/A"
+        email = str(item.email) if item.email else "N/A"
+        address = str(item.address) if item.address else "N/A"
         ret.append(f"| {name:^24} | {phone:^24} | {birthday:^24} | {email:^24} | {address:^24} |")
         ret.append(separator)
     return '\n'.join(ret)
@@ -267,22 +267,22 @@ def flow_contact_find(book: AddressBook) -> str:
         if record.phone:
             row_data.append(record.phone.value)
         else:
-            row_data.append("")
+            row_data.append("N/A")
 
         if record.birthday:
             row_data.append(str(record.birthday))
         else:
-            row_data.append("")
+            row_data.append("N/A")
 
         if record.email:
             row_data.append(record.email.value)
         else:
-            row_data.append("")
+            row_data.append("N/A")
 
         if record.address:
             row_data.append(record.address.value)
         else:
-            row_data.append("")
+            row_data.append("N/A")
 
         table_row = "| " + " | ".join(
             f"{t[0]:^{t[1]}}" for t in zip(row_data, columns_width)) + " |"
@@ -350,7 +350,7 @@ def flow_contact_birthdays(book: AddressBook, args: list[str]) -> str:
         if record.birthday:
             row_data.append(str(record.birthday))
         else:
-            row_data.append("")
+            row_data.append("N/A")
 
         table_row = "| " + " | ".join(
             f"{t[0]:^{t[1]}}" for t in zip(row_data, columns_width)) + " |"

@@ -127,7 +127,7 @@ def flow_tags_find_tag(notes: Notes, args: list[Optional[str]]) -> str:
     filtered_notes = notes.find_tag(query)
 
     if len(filtered_notes) == 0:
-        return "No notes found."
+        return "The tag is not found in any notes."
 
     for tag, titles in filtered_notes.items():
         result_str += "\n" + f"{'Tag: ':<10}" + tag + "\n"
@@ -139,25 +139,37 @@ def flow_tags_find_tag(notes: Notes, args: list[Optional[str]]) -> str:
 
 
 def flow_tags_all_tags(notes: Notes) -> str:
+    if len(notes.collect_tags()) == 0:
+        return "No tags found."
+
     return ', '.join(["#" + str(tag) for tag in notes.all_tags()])
     
 
 def flow_tags_all_tags_revert(notes: Notes) -> str:
+    if len(notes.collect_tags()) == 0:
+        return "No tags found."
+
     return ', '.join(["#" + str(tag) for tag in notes.all_tags_revert()])
 
 
 def flow_tags_alpsort_tags(notes: Notes) -> str:
+    if len(notes.collect_tags()) == 0:
+        return "No tags found."
+
     return ', '.join(["#" + str(tag) for tag in notes.alpsort_tags()])
 
 
 def flow_tags_alpsort_tags_revert(notes: Notes) -> str:
+    if len(notes.collect_tags()) == 0:
+        return "No tags found."
+
     return ', '.join(["#" + str(tag) for tag in notes.all_tags_revert()])
 
 
 def flow_notes_find_by_tag(notes, tag: Optional[str]) -> str:
     if tag is None:
         tag = prompt("Give me Tag Name [Empty for Cancel]: ", style=style, completer=WordCompleter(notes.collect_tags(), ignore_case=True,))
-    
+
     if tag is None:
         return 'Canceled'
 
