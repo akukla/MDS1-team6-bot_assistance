@@ -41,6 +41,14 @@ def flow_get_all_contacts(book: AddressBook):
         return 'Address book is empty'
  
     for item in book.enumerate():
+        if item.phone is None:
+            item.phone = "N/A"
+        if item.email is None:
+            item.email = "N/A"
+        if item.address is None:
+            item.address = "N/A"
+        if item.birthday is None:
+            item.birthday = "N/A"
         ret.append(f"| {str(item.name):^24} | {str(item.phone):^24} | {str(item.birthday):^24} | {str(item.email):^24} | {str(item.address):^24} |")
         ret.append(separator)
     return '\n'.join(ret)
