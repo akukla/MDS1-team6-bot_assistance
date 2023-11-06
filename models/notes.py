@@ -74,7 +74,7 @@ class Notes(BaseClass):
     def find_notes_by_tag(self, tag) -> list[Note]:
         ret = []
         for note in self.values():
-            if note.text is not None and tag in note.text:
+            if note.text is not None and f'#{tag}' in note.text:
                 ret.append(note)
         return ret
 
